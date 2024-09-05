@@ -67,7 +67,6 @@ const Live = () => {
                 <Button
                   className="bg-[#D3175233] w-full rounded-md mb-2"
                   style={{ color: "#D31752" }}
-                  onClick={() => removeJob(row.original?.id)}
                 >
                   Delete
                 </Button>

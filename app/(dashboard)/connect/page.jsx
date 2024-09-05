@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import Search from "@/components/shared/Search";
@@ -12,10 +13,9 @@ import { Button } from "@/components/ui/button";
 import { LuCalendarDays } from "react-icons/lu";
 import { FaArrowRightLong } from "react-icons/fa6";
 import AddGroup from "@/components/shared/modal/AddGroup";
-import AddPost from "@/components/shared/modal/AddPost";
 
 import Link from "next/link";
-const Live = () => {
+const Connect = () => {
   return (
     <div className=" p-1.5 md:p-3 2xl:p-5 w-full bg-slate-50 ">
       <div className="flex flex-col md:flex-row gap-6 items-center justify-between w-full">
@@ -67,7 +67,6 @@ const Live = () => {
                 <Button
                   className="bg-[#D3175233] w-full rounded-md mb-2"
                   style={{ color: "#D31752" }}
-                  onClick={() => removeJob(row.original?.id)}
                 >
                   Delete
                 </Button>
@@ -130,4 +129,4 @@ const Live = () => {
   );
 };
 
-export default Live;
+export default Connect;
