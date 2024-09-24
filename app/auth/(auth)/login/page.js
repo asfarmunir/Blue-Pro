@@ -1,17 +1,65 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import BlueBtn from "@/components/shared/auth/BlueBtn";
 import { GoogleBtn } from "@/components/shared/GoogleBtn";
 import Link from "next/link";
-
+import {signIn,useSession } from 'next-auth/react';
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("asfarma2815@gmail.com");
+  const [password, setPassword] = useState("asfarasfar");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let formErrors= {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      formErrors.email = "Email is required";
+    } else if (!emailPattern.test(email)) {
+      formErrors.email = "Please enter a valid email address";
+    }
+
+    if (!password) {
+      formErrors.password = "Password is required";
+    } else if (password.length < 6) {
+      formErrors.password = "Password should be at least 6 characters long";
+    }
+
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setLoading(true);
+
+    // Simulating an API request for login
+    try {
+      console.log("Logging in...");
+
+      const res =  await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
+
+      console.log(res);
+
+    } catch (error) {
+      console.error("Login failed", error);
+      setErrors({ email: "Invalid login credentials" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-      <div className="mb-4">
+      <div className="mb-4 pt-8">
         <div className="text-2xl mb-4 flex items-center flex-col space-y-1">
           <Image
             src="/hands.svg"
@@ -40,11 +88,12 @@ const Login = () => {
               letterSpacing: "3%",
             }}
           >
-            Enter your credential to access your account.{" "}
+            Enter your credential to access your account.
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-start mt-8">
+      <form className="flex flex-col items-start " onSubmit={handleSubmit}>
+        {/* Email Field */}
         <label
           htmlFor="email"
           className="mt-4 font-semibold mb-2"
@@ -55,7 +104,7 @@ const Login = () => {
         <input
           type="email"
           id="email"
-          required
+          
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
@@ -64,7 +113,9 @@ const Login = () => {
             height: "60px",
           }}
         />
+        {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
 
+        {/* Password Field */}
         <label
           htmlFor="password"
           className="mt-4 font-semibold mb-2 flex justify-between items-center w-full"
@@ -89,18 +140,24 @@ const Login = () => {
           id="password"
           placeholder="Enter your password"
           value={password}
-          required
+          
           onChange={(e) => setPassword(e.target.value)}
           className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10 "
           style={{
             height: "60px",
           }}
         />
+        {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
 
+        {/* Submit Button */}
         <div className="w-full mt-4">
-          <Link href={"/"}>
-            <BlueBtn title={"Login"} />
-          </Link>
+          <button
+            type="submit"
+            className="w-full bg-[#38B6FF] text-white font-semibold text-center py-4 rounded-xl"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
           <div className="text-center mt-4">
             Don&#39;t have an account?{" "}
             <b>
@@ -108,13 +165,11 @@ const Login = () => {
             </b>
           </div>
 
-          <div class="my-6 text-center">
-            <div class=" text-gray-600 flex items-center justify-center">
-              <span class="flex-grow border-t border-gray-300"></span>
-              <span class="leading-none px-2 mx-4 text-sm font-medium bg-white">
-                Or
-              </span>
-              <span class="flex-grow border-t border-gray-300"></span>
+          <div className="my-6 text-center">
+            <div className="text-gray-600 flex items-center justify-center">
+              <span className="flex-grow border-t border-gray-300"></span>
+              <span className="leading-none px-2 mx-4 text-sm font-medium bg-white">Or</span>
+              <span className="flex-grow border-t border-gray-300"></span>
             </div>
           </div>
 
@@ -123,7 +178,7 @@ const Login = () => {
             BluPro Pvt. Ltd 2023©, All rights reserved
           </div>
         </div>
-      </div>
+      </form>
     </>
   );
 };

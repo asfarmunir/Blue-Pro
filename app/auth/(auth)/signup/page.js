@@ -1,15 +1,84 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import BlueBtn from "@/components/shared/auth/BlueBtn";
 import { GoogleBtn } from "@/components/shared/GoogleBtn";
 import Link from "next/link";
-
+import axios from "axios";
+import { HashLoader } from "react-spinners";
+ import {  toast } from 'react-toastify';
 const Signup = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState("asfar munir asfi");
+  const [email, setEmail] = useState("asfarma2815@gmail.com");
+  const [password, setPassword] = useState("asfarafar");
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
+
+  // Simple validation logic
+  const validateForm = () => {
+    let valid = true;
+    let newErrors = { name: "", email: "", password: "" };
+
+    if (!name) {
+      newErrors.name = "Name is required";
+      valid = false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Invalid email format";
+      valid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+      valid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+
+  
+    return valid;
+    
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      setLoading(true);
+      try {
+        // Simulate form submission (replace this with actual API call)
+          const data = { name, email, password };
+
+          const response = await axios.post("/api/signup", data);
+          console.log("Server response", response.data);
+        if (response.data.status === 200) {
+          console.log("User created successfully");
+        }
+        else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        console.error("Error during form submission", error);
+        toast.error("Error during form submission");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <>
       <div className="lg:mt-24 xl:mt-18">
@@ -41,11 +110,12 @@ const Signup = () => {
               letterSpacing: "3%",
             }}
           >
-            Enter your credential to access your account.{" "}
+            Enter your credentials to access your account.{" "}
           </p>
         </div>
       </div>
-      <div className="flex flex-col items-start mt-8">
+      <form onSubmit={handleSubmit} className="flex flex-col items-start mt-8">
+        {/* Name Field */}
         <label
           htmlFor="name"
           className="mb-2 font-semibold"
@@ -56,16 +126,17 @@ const Signup = () => {
         <input
           type="text"
           id="name"
-          required
-          value={email}
+          value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter your name"
-          className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10 "
+          className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10"
           style={{
             height: "60px",
           }}
         />
+        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
 
+        {/* Email Field */}
         <label
           htmlFor="email"
           className="mt-4 font-semibold mb-2"
@@ -76,16 +147,17 @@ const Signup = () => {
         <input
           type="email"
           id="email"
-          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
-          className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10 "
+          className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10"
           style={{
             height: "60px",
           }}
         />
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
+        {/* Password Field */}
         <label
           htmlFor="password"
           className="mt-4 font-semibold mb-2 flex justify-between items-center w-full"
@@ -108,30 +180,43 @@ const Signup = () => {
         <input
           type="password"
           id="password"
-          placeholder="Enter your password"
           value={password}
-          required
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10 "
+          placeholder="Enter your password"
+          className="w-full pl-4 rounded-2xl bg-[#38B6FF]/10"
           style={{
             height: "60px",
           }}
         />
+        {errors.password && (
+          <p className="text-red-500 text-sm">{errors.password}</p>
+        )}
 
+        {/* Submit Button */}
         <div className="w-full mt-4">
-          <Link href={"/"}>
-            <BlueBtn title={"Get Started"} />
-          </Link>
+          <button
+            type="submit"
+            className="w-full  bg-[#38B6FF] flex items-center justify-center text-white font-semibold text-center py-4 rounded-xl"
+            disabled={loading}
+            style={{
+              backgroundColor: loading ? "#ccc" : "#38B6FF",
+              height: "60px",
+              borderRadius: "10px",
+            }}
+          >
+            {loading ? <HashLoader size={31} color="white" /> : "Get Started"} 
+          </button>
 
           <div className="text-center mt-4">
-        If you already have an account you can?   {" "}        
-          <b>
-              <Link href={"/auth/login"}>Sign In</Link>
+            If you already have an account you can{" "}
+            <b>
+              <Link href="/auth/login">Sign In</Link>
             </b>
           </div>
 
+          {/* Or section */}
           <div className="my-6 text-center">
-            <div className=" text-gray-600 flex items-center justify-center">
+            <div className="text-gray-600 flex items-center justify-center">
               <span className="flex-grow border-t border-gray-300"></span>
               <span className="leading-none px-2 mx-4 text-sm font-semibold bg-white">
                 Or
@@ -145,7 +230,7 @@ const Signup = () => {
             BluPro Pvt. Ltd 2023©, All rights reserved
           </div>
         </div>
-      </div>
+      </form>
     </>
   );
 };
