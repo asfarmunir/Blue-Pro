@@ -1,23 +1,19 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { LuMoveRight, LuMoveLeft } from "react-icons/lu";
-import { Textarea } from "@/components/ui/textarea";
+import React, { useRef, useState } from "react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
-import { Checkbox } from "@/components/ui/checkbox";
+import { deleteReward } from "@/database/actions/reward.action";
+import { toast } from "react-toastify";
 
-const AddReward = () => {
+const AddReward = ({ id }) => {
+  const modalRef = useRef(null);
+
   return (
     <Dialog>
-      <DialogTrigger className="bg-[#D3175233] text-red-600 w-full rounded-md text-sm font-semibold py-2.5 mb-2 ">
+      <DialogTrigger
+        ref={modalRef}
+        className="bg-[#D3175233] text-red-600 w-full rounded-md text-sm font-semibold py-2.5 mb-2 "
+      >
         Delete Reward
       </DialogTrigger>
       <DialogContent
@@ -32,10 +28,22 @@ const AddReward = () => {
           <p className="text-sm text-slate-600">
             Do you really want to delete the reward listing here
           </p>
-          <button className=" w-full rounded-lg py-3 mt-5 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold">
+          <button
+            onClick={async () => {
+              await deleteReward(id);
+              toast.success("Reward deleted successfully");
+              if (modalRef.current) modalRef.current.click();
+            }}
+            className=" w-full rounded-lg py-3 mt-5 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold"
+          >
             Yes
           </button>
-          <button className=" w-full rounded-lg mb-3 text-[#38B6FF] inline-flex items-center justify-center  underline gap-3 font-semibold">
+          <button
+            onClick={() => {
+              if (modalRef.current) modalRef.current.click();
+            }}
+            className=" w-full rounded-lg mb-3 text-[#38B6FF] inline-flex items-center justify-center  underline gap-3 font-semibold"
+          >
             Cancle
           </button>
         </div>

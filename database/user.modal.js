@@ -5,11 +5,17 @@ const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true },
     password: { type: String },
-    role:{type:String, required:true},
+    userType:{type:String, default:'user' },
     googleId: String,
     googleEmail: String,
     googleDisplayName: String,
     googlePhoto: String,
+    bluepoints: {type:Number, default:0},
+    isBlocked: {
+      type: Boolean,
+      default: false
+    },
+    
   },
   { timestamps: true },
   

@@ -14,8 +14,21 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IoIosLogOut } from "react-icons/io";
+import { signOut } from "next-auth/react";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-const AddReward = () => {
+const Signout = () => {
+  const router = useRouter();
+
+  const signOutHandler = async () => {
+    await signOut({
+      redirect: false,
+      callbackUrl: "/",
+    });
+    toast.success("Logout Successfully");
+    router.replace("/auth/login");
+  };
   return (
     <Dialog>
       <DialogTrigger
@@ -43,7 +56,10 @@ const AddReward = () => {
           <p className="text-sm 2xl:text-lg text-slate-600 text-center">
             Do you really want to logout the blupro <br /> app here
           </p>
-          <button className=" w-full rounded-lg py-3 mt-5 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold">
+          <button
+            onClick={signOutHandler}
+            className=" w-full rounded-lg py-3 mt-5 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold"
+          >
             Yes
           </button>
           <button className=" w-full rounded-lg mb-3 text-[#38B6FF] inline-flex items-center justify-center  underline gap-3 font-semibold">
@@ -55,4 +71,4 @@ const AddReward = () => {
   );
 };
 
-export default AddReward;
+export default Signout;

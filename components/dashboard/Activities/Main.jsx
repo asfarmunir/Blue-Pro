@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { LuCalendarDays } from "react-icons/lu";
 import Image from "next/image";
 
-const Main = ({ data, pagination }) => {
+const Main = ({ data, pagination, recentUsers }) => {
   return (
     <div style={{ backgroundColor: "white" }} className="pb-8">
       <div className="border rounded-xl p-5 mb-6 ">
@@ -122,35 +122,54 @@ const Main = ({ data, pagination }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className=" text-xs max-w-[120px]  2xl:text-sm  font-semibold">
-                Olivia Daddario
-              </TableCell>
-              <TableCell className="text-xs max-w-[200px] 2xl:text-sm">
-                <p className="bg-[#E6F7F8] text-[#00A3B4] flex items-center  justify-center w-fit gap-2 text-center font-bold px-3  py-2 rounded-full">
-                  <span className=" h-2 w-2 rounded-full bg-[#00A3B4]"></span>
-                  Guest
-                </p>
-              </TableCell>
-              <TableCell className=" text-xs max-w-[100px]  2xl:text-sm  ">
-                Jan 13, 2022
-              </TableCell>
-              <TableCell className=" text-xs max-w-[180px]  2xl:text-sm  ">
-                Userefandax1234@gmail.com
-              </TableCell>
-              <TableCell className="  max-w-[130px] text-xs 2xl:text-sm  ">
-                <div className=" flex items-center gap-2">
-                  <button className="bg-[#FEF3F2] text-red-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
-                    <Image src="/reject.svg" alt="eye" width={18} height={18} />
-                    Decline
-                  </button>
-                  <button className="bg-[#E6F6EE] text-green-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
-                    <Image src="/accept.svg" alt="eye" width={18} height={18} />
-                    Accept
-                  </button>
-                </div>
-              </TableCell>
-            </TableRow>
+            {recentUsers?.users?.map((user, index) => {
+              const date = new Date(user.createdAt);
+              const month = date.toLocaleString("default", {
+                month: "long",
+              });
+              const year = date.getFullYear();
+              return (
+                <TableRow key={index}>
+                  <TableCell className=" capitalize text-xs max-w-[120px]  2xl:text-sm  font-semibold">
+                    {user.username}
+                  </TableCell>
+                  <TableCell className="text-xs max-w-[200px] 2xl:text-sm">
+                    <p className="bg-[#E6F7F8] text-[#00A3B4] flex items-center  justify-center w-fit gap-2 text-center font-bold px-3  py-2 rounded-full">
+                      <span className=" h-2 w-2 capitalize  rounded-full bg-[#00A3B4]"></span>
+                      {user.userType}
+                    </p>
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[100px]  2xl:text-sm  ">
+                    {month} {year}
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[180px]  2xl:text-sm  ">
+                    {user.email}
+                  </TableCell>
+                  <TableCell className="  max-w-[130px] text-xs 2xl:text-sm  ">
+                    <div className=" flex items-center gap-2">
+                      <button className="bg-[#FEF3F2] text-red-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
+                        <Image
+                          src="/reject.svg"
+                          alt="eye"
+                          width={18}
+                          height={18}
+                        />
+                        Decline
+                      </button>
+                      <button className="bg-[#E6F6EE] text-green-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
+                        <Image
+                          src="/accept.svg"
+                          alt="eye"
+                          width={18}
+                          height={18}
+                        />
+                        Accept
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

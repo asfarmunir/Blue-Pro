@@ -1,8 +1,10 @@
 import Summary from "@/components/dashboard/summary/Summary";
 import React from "react";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import users from "./users.json";
 import Main from "@/components/dashboard/Activities/Main";
+import { getRecentUsers } from "@/database/actions/user.action";
 
 const jobSeekers = async (pageNo = 1) => {
   const jobs = await users;
@@ -26,12 +28,14 @@ const jobSeekers = async (pageNo = 1) => {
 const Dashboard = async ({ searchParams }) => {
   const { page } = searchParams;
   const { data, pagination } = await jobSeekers(page);
+  const session = await getServerSession(authOptions);
 
+  const recentUsers = await getRecentUsers();
   return (
     <div className="  space-y-4">
       <Summary />
         
-            <Main data={data} pagination={pagination} />
+            <Main data={data} pagination={pagination} recentUsers={recentUsers} />
       
     </div>
   );

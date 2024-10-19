@@ -5,11 +5,20 @@ import BlueBtn from "@/components/shared/auth/BlueBtn";
 import { GoogleBtn } from "@/components/shared/GoogleBtn";
 import Link from "next/link";
 import {signIn,useSession } from 'next-auth/react';
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { HashLoader } from "react-spinners";
 const Login = () => {
   const [email, setEmail] = useState("asfarma2815@gmail.com");
-  const [password, setPassword] = useState("asfarasfar");
+  const [password, setPassword] = useState("asfarafar");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const session = useSession();
+  const  router = useRouter();
+
+  if(session.data){
+    router.push('/');
+  }
 
   const validateForm = () => {
     let formErrors= {};
@@ -40,15 +49,19 @@ const Login = () => {
     // Simulating an API request for login
     try {
       console.log("Logging in...");
-
+      console.log(email,password)
       const res =  await signIn('credentials', {
-        redirect: false,
         email,
         password,
+        redirect: false,
       });
-
-      console.log(res);
-
+      if(!res.ok)
+      {
+        toast.error(res.error);
+        return
+      }
+      toast.success("Logged in successfully");
+      router.push('/');
     } catch (error) {
       console.error("Login failed", error);
       setErrors({ email: "Invalid login credentials" });
@@ -56,6 +69,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <>
@@ -122,18 +136,6 @@ const Login = () => {
           style={{ color: "rgba(0, 0, 0, 0.7)", fontSize: "16px" }}
         >
           Password
-          <Link
-            href="/auth/forget-password"
-            className="hover:underline"
-            style={{
-              color: "rgba(0, 0, 0, 1)",
-              opacity: "50%",
-              fontSize: "14px",
-              lineHeight: "21px",
-            }}
-          >
-            Forgot Password?
-          </Link>
         </label>
         <input
           type="password"
@@ -155,8 +157,13 @@ const Login = () => {
             type="submit"
             className="w-full bg-[#38B6FF] text-white font-semibold text-center py-4 rounded-xl"
             disabled={loading}
+            style={{
+              backgroundColor: loading ? "#ccc" : "#38B6FF",
+              height: "60px",
+              borderRadius: "10px",
+            }}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? <HashLoader size={25} color="white" /> : "Login"}
           </button>
           <div className="text-center mt-4">
             Don&#39;t have an account?{" "}

@@ -2,7 +2,7 @@ import Summary from "@/components/dashboard/summary/Summary";
 import { columns, removeJob } from "./columns";
 import DataTable from "@/components/shared/DataTable";
 import Search from "@/components/shared/Search";
-import { CiFilter } from "react-icons/ci";
+import { CiCircleChevDown, CiFilter } from "react-icons/ci";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LuCalendarDays } from "react-icons/lu";
+import { getAllUsers } from "@/database/actions/user.action";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Image from "next/image";
+import Link from "next/link";
+import BlockUser from "@/components/shared/BlockUser";
 
 const users = [
   {
@@ -136,6 +148,8 @@ const users = [
   },
 ];
 
+
+
 const jobSeekers = async (pageNo = 1) => {
   const jobs = users;
   const limit = 10;
@@ -156,6 +170,9 @@ const jobSeekers = async (pageNo = 1) => {
 };
 
 async function User({ searchParams }) {
+
+  const allUsers =  await getAllUsers();
+  console.log("🚀 ~ User ~ allUsers:", allUsers)
   console.log("id is: ", removeJob);
   const { page } = searchParams;
   const { data, pagination } = await jobSeekers(page);
@@ -203,12 +220,89 @@ async function User({ searchParams }) {
           </div>
         
         </div>
-        <DataTable
+            <Table>
+          <TableHeader className="bg-[#F9FAFB] border">
+            <TableRow>
+              <TableHead>PID</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>User Type</TableHead>
+              <TableHead className="text-center">Bluepoints</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead className="text-center" >Rewards</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {allUsers?.users?.map((user, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell className=" capitalize text-xs max-w-[120px]  2xl:text-sm  ">
+                    #{index+1}
+                  </TableCell>
+                  <TableCell className=" capitalize text-xs max-w-[120px]  2xl:text-sm  font-semibold">
+                    {user.username}
+                  </TableCell>
+                  <TableCell className="text-xs max-w-[120px] 2xl:text-sm">
+                    <p className="bg-[#E6F7F8] text-[#00A3B4] flex items-center  justify-center w-fit gap-2 text-center font-bold px-3  py-2 rounded-full">
+                      <span className=" h-2 w-2 capitalize  rounded-full bg-[#00A3B4]"></span>
+                      {user.userType}
+                    </p>
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[100px] text-center  2xl:text-sm  ">
+                    {user.bluepoints}
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[180px]  2xl:text-sm  ">
+                    {user.email}
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[180px] text-center  2xl:text-sm  ">
+                    {user.rewards || 0}
+                  </TableCell>
+                  <TableCell className="  max-w-[130px] text-xs 2xl:text-sm  ">
+                     <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <CiCircleChevDown className="text-3xl" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="px-4 pt-4 bg-white">
+            <Link href={`/user/${user._id}`}>
+             <Button className="bg-[#E7E7E7] w-full px-12  rounded-md mb-2 text-black hover:text-white">
+              View User
+            </Button>
+            </Link>
+            <hr
+              className="pt-2 border-t-1 block w-full "
+              style={{ borderColor: "#CCCCCD" }}
+            />
+            {/* <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
+              Send Blu Points
+            </Button>
+            <hr
+              className="pt-2 border-t-1 block w-full"
+              style={{ borderColor: "#CCCCCD" }}
+            />
+            <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
+              View Claimed Rewards
+            </Button> */}
+            {/* <hr
+              className="pt-2 border-t-1 block w-full"
+              style={{ borderColor: "#CCCCCD" }}
+            /> */}
+            <BlockUser id={user._id} isBlocked={user.isBlocked}/>
+          </DropdownMenuContent>
+        </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+        {/* <DataTable
           columns={columns}
           data={data}
           pagination={pagination}
           title={"Total Users"}
-        />
+        /> */}
       </div>
     </div>
   );

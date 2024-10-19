@@ -6,17 +6,26 @@ import { GoogleBtn } from "@/components/shared/GoogleBtn";
 import Link from "next/link";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
+import { useRouter } from "next/navigation";
  import {  toast } from 'react-toastify';
+ import { useSession } from "next-auth/react";
 const Signup = () => {
   const [name, setName] = useState("asfar munir asfi");
   const [email, setEmail] = useState("asfarma2815@gmail.com");
-  const [password, setPassword] = useState("asfarafar");
+  const [password, setPassword] = useState("asfarasfar");
   const [errors, setErrors] = useState({
     name: "",
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const session = useSession();
+  const router= useRouter();
+
+
+  if (session.data) {
+    router.push("/");
+  }
 
   // Simple validation logic
   const validateForm = () => {
@@ -65,7 +74,8 @@ const Signup = () => {
           const response = await axios.post("/api/signup", data);
           console.log("Server response", response.data);
         if (response.data.status === 200) {
-          console.log("User created successfully");
+          toast.success('Account created successfully');
+          router.push("/auth/login");
         }
         else {
           toast.error(response.data.message);
@@ -164,18 +174,7 @@ const Signup = () => {
           style={{ color: "rgba(0, 0, 0, 0.7)", fontSize: "16px" }}
         >
           Password
-          <Link
-            href="/auth/forget-password"
-            className="hover:underline"
-            style={{
-              color: "rgba(0, 0, 0, 1)",
-              opacity: "50%",
-              fontSize: "14px",
-              lineHeight: "21px",
-            }}
-          >
-            Forgot Password?
-          </Link>
+          
         </label>
         <input
           type="password"
