@@ -1,13 +1,46 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery } from "@/lib/utils";
 
-const Search = () => {
+const CustomersFilter = () => {
+  const searchParams = useSearchParams();
+  const name = searchParams.get("name");
+  const [searchTerm, setSearchTerm] = useState(name || "");
+  const router = useRouter();
+
+  // Debounce delay in milliseconds
+  const debounceDelay = 250;
+
+  // Effect to handle the debounced search
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      const queryString = formUrlQuery({
+        params: searchParams.toString(),
+        key: "name",
+        value: searchTerm ? searchTerm : null,
+      });
+
+      router.push(queryString, { scroll: false });
+    }, debounceDelay);
+
+    return () => clearTimeout(debounceTimer); // Cleanup timeout on component unmount or when searchTerm changes
+  }, [searchTerm, searchParams, router]);
+
+  // Input change handler
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="relative ">
       <input
         className="appearance-none text-sm 2xl:text-base  hover:border pl-10  hover:border-gray-400 transition-colors rounded-md w-full py-3 2xl:py-4 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-purple-600 focus:border-purple-600 focus:shadow-outline bg-[#38B6FF]/10"
         id="username"
         type="text"
-        placeholder="Search..."
+        placeholder="search..."
+        value={searchTerm}
+        onChange={handleSearchChange}
       />
       {/* <div className="absolute right-0 inset-y-0 flex items-center">
         <svg
@@ -46,4 +79,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default CustomersFilter;

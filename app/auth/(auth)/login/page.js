@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { HashLoader } from "react-spinners";
 const Login = () => {
   const [email, setEmail] = useState("asfarma2815@gmail.com");
-  const [password, setPassword] = useState("asfarafar");
+  const [password, setPassword] = useState("asfarasfar");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const session = useSession();

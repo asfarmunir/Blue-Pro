@@ -12,16 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "react-toastify";
-import {
-  getAllProducts,
-  getProductById,
-} from "@/database/actions/product.action";
+import { getAllProducts } from "@/database/actions/product.action";
 import { useRef } from "react";
-import {
-  createReward,
-  getRewardById,
-  updateReward,
-} from "@/database/actions/reward.action";
+import { getRewardById, updateReward } from "@/database/actions/reward.action";
 import { HashLoader } from "react-spinners";
 const EditReward = ({ id }) => {
   const [progress, setProgress] = useState(0);
@@ -49,8 +42,12 @@ const EditReward = ({ id }) => {
       bluepoints: res.reward.bluepoints,
       attachedProducts: [],
     });
-
-    setAttachedProducts([...res.reward.attachedProducts]);
+    // setAttachedProducts([...res.reward.attachedProducts]);
+    const allProducts = await getAllProducts({
+      page: 1,
+      limit: 100,
+    });
+    setAttachedProducts(allProducts.products);
     setLoading(false);
   };
 
@@ -313,7 +310,7 @@ const EditReward = ({ id }) => {
               onClick={progress === 0 ? handleNext : handleSubmit}
               className="w-full rounded-lg py-3 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold"
             >
-              {progress === 0 ? "Next" : "Add Reward"}
+              {progress === 0 ? "Next" : "Update Reward"}
               <LuMoveRight size={20} />
             </button>
           </>

@@ -27,11 +27,11 @@ const DashboardLayout = ({ children }) => {
               "
             />
           </div>
-          
+{/*           
           <div className=" mb-4">
 
           <Search />
-          </div>
+          </div> */}
 
       
             <Sidebar />

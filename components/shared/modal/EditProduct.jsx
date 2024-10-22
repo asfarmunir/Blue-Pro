@@ -31,6 +31,7 @@ const EditReward = ({ id }) => {
   const [productName, setProductName] = useState("");
   const [bluepoints, setBluepoints] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
   const [files, setFiles] = useState([]);
   const router = useRouter();
@@ -108,12 +109,14 @@ const EditReward = ({ id }) => {
     e.preventDefault();
     if (validateForm()) {
       // Logic for form submission (e.g., API request)
+      setLoading(true);
       let uploadedImagesUrl = [];
       toast.loading("Updating product...");
 
       if (files.length > 0) {
         const uploadedImages = await startUpload(files);
         if (!uploadedImages) {
+          setLoading(false);
           return;
         }
         uploadedImages.map((img) => uploadedImagesUrl.push(img.url));
@@ -128,6 +131,7 @@ const EditReward = ({ id }) => {
       const res = await updateProduct(id, data);
       if (res.status !== 200) {
         toast.dismiss();
+        setLoading(false);
         return toast.error("Failed to update product");
       }
       toast.dismiss();
@@ -138,6 +142,7 @@ const EditReward = ({ id }) => {
       setBluepoints("");
       setDescription("");
       setFiles([]);
+      setLoading(false);
       uploadedImageUrl = [];
       setErrors({
         productName: "",
@@ -292,6 +297,7 @@ const EditReward = ({ id }) => {
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full rounded-lg py-3 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold mt-4"
           >
             Update Product

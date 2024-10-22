@@ -18,16 +18,41 @@ export const createProduct = async (product) => {
 
 
 
-export const getAllProducts = async () => {
-    try {
-        await connectToDatabase();
-        const products = await Product.find();
-        return JSON.parse(JSON.stringify({products,status:200}));
-    } catch (error) {
-        console.error("Get all products failed", error);
-        return JSON.parse(JSON.stringify({error: error.message,status:500}));
-    }
-}
+export const getAllProducts = async ({
+  productPage , // Default to page 1 if not provided
+  limit , // Default limit to 10 if not provided
+}) => {
+  try {
+    await connectToDatabase();
+
+    const totalEntries = await Product.countDocuments(); // Get total number of products
+    const totalPages = Math.ceil(totalEntries / limit); // Calculate total pages
+
+    // Fetch paginated products
+    const products = await Product.find()
+      .skip((productPage - 1) * limit) // Skip entries based on the page number
+      .limit(limit); // Limit the number of entries per page
+
+    return JSON.parse(
+      JSON.stringify({
+        products,
+        totalPages,
+        totalEntries,
+        currentPage: productPage,
+        status: 200,
+      })
+    );
+  } catch (error) {
+    console.error("Get all products failed", error);
+    return JSON.parse(
+      JSON.stringify({
+        error: error.message,
+        status: 500,
+      })
+    );
+  }
+};
+
 
 export const getProductById = async (id) => {
     try {

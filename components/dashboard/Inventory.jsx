@@ -39,8 +39,18 @@ import { deleteProduct } from "@/database/actions/product.action";
 import { toast } from "react-toastify";
 import { useRef } from "react";
 import EditReward from "@/components/shared/modal/EditReward";
+import Pagination from "../shared/Pagination";
 
-const Inventory = ({ products, rewards }) => {
+const Inventory = ({
+  products,
+  rewards,
+  totalRewards,
+  rewardPage,
+  totalRewardPages,
+  totalProducts,
+  productPage,
+  totalProductPages,
+}) => {
   const modalRef = useRef(null);
   return (
     <div style={{ backgroundColor: "white" }} className="pb-8">
@@ -168,6 +178,13 @@ const Inventory = ({ products, rewards }) => {
             )}
           </TableBody>
         </Table>
+        <div className=" w-full mt-4">
+          <Pagination
+            page={rewardPage}
+            totalPages={totalRewardPages}
+            urlParamName="page"
+          />
+        </div>
       </div>
       <div className="border rounded-xl p-5 mb-8  ">
         <div className="flex justify-between items-center mb-8">
@@ -175,7 +192,7 @@ const Inventory = ({ products, rewards }) => {
           {/* <Search /> */}
 
           <div className="flex items-center gap-2">
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
@@ -204,7 +221,7 @@ const Inventory = ({ products, rewards }) => {
                   Delete
                 </Button>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
             <AddProduct />
           </div>
         </div>
@@ -233,7 +250,7 @@ const Inventory = ({ products, rewards }) => {
                   <TableCell className=" text-xs max-w-[160px]  2xl:text-sm  font-semibold">
                     <div className="flex items-center gap-2">
                       <Image
-                        src="/product.svg"
+                        src={product.image}
                         alt="watch"
                         width={70}
                         className="rounded-md"
@@ -268,9 +285,9 @@ const Inventory = ({ products, rewards }) => {
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator className="mb-3" />
 
-                        <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
+                        {/* <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
                           View Reward
-                        </Button>
+                        </Button> */}
                         <EditProduct id={product._id} />
                         {/* <Button
                           className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black
@@ -331,6 +348,13 @@ const Inventory = ({ products, rewards }) => {
             )}
           </TableBody>
         </Table>
+        <div className=" w-full mt-4">
+          <Pagination
+            page={productPage}
+            totalPages={totalProductPages}
+            urlParamName="productPage"
+          />
+        </div>
       </div>
     </div>
   );

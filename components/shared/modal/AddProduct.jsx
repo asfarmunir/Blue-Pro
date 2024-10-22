@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,9 +24,11 @@ import { convertFileToUrl } from "@/lib/utils";
 const AddReward = () => {
   // Form state
   const [productName, setProductName] = useState("football");
+  const [loading, setLoading] = useState(false);
   const [bluepoints, setBluepoints] = useState("20");
   const [description, setDescription] = useState("lesgooo");
   const [files, setFiles] = useState([]);
+  const modalRef = useRef(null);
 
   let uploadedImageUrl = [];
 
@@ -84,7 +86,7 @@ const AddReward = () => {
   };
 
   const { startUpload, routeConfig } = useUploadThing("imageUploader", {
-    onClientUploadComplete: (res) => {
+    onClientUploadComplete: () => {
       setFiles([]);
       uploadedImageUrl = [];
     },
@@ -108,6 +110,8 @@ const AddReward = () => {
       if (files.length === 0) {
         return toast.error("Please upload an image");
       }
+
+      setLoading(true);
       let uploadedImagesUrl = [];
 
       toast.loading("Adding product...");
@@ -115,6 +119,7 @@ const AddReward = () => {
       if (files.length > 0) {
         const uploadedImages = await startUpload(files);
         if (!uploadedImages) {
+          setLoading(false);
           return;
         }
         uploadedImages.map((img) => uploadedImagesUrl.push(img.url));
@@ -129,6 +134,7 @@ const AddReward = () => {
       const res = await createProduct(data);
       if (res.status !== 200) {
         toast.dismiss();
+        setLoading(false);
         return toast.error("Failed to add product");
       }
       toast.dismiss();
@@ -138,18 +144,25 @@ const AddReward = () => {
       setBluepoints("");
       setDescription("");
       setFiles([]);
+      setLoading(false);
       uploadedImageUrl = [];
       setErrors({
         productName: "",
         bluepoints: "",
         description: "",
       });
+      if (modalRef.current) {
+        modalRef.current.click();
+      }
     }
   };
 
   return (
     <Dialog>
-      <DialogTrigger className="bg-[#38B6FF] text-white font-bold px-4 py-2.5 text-sm rounded-md">
+      <DialogTrigger
+        ref={modalRef}
+        className="bg-[#38B6FF] text-white font-bold px-4 py-2.5 text-sm rounded-md"
+      >
         Add Product
       </DialogTrigger>
       <DialogContent
@@ -217,7 +230,7 @@ const AddReward = () => {
           </div>
 
           {files.length > 0 ? (
-            <div className="w-full flex pt-4 items-center gap-2 mt-2">
+            <div className="w-full flex  pt-4 items-center gap-2 mt-2">
               {files.map((file, index) => (
                 <div key={index} className="w-32 h-32 relative">
                   <Image
@@ -268,7 +281,10 @@ const AddReward = () => {
 
           <button
             type="submit"
-            className="w-full rounded-lg py-3 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold mt-4"
+            disabled={loading}
+            className={`
+              ${loading ? "opacity-50" : "opacity-100"}
+              w-full rounded-lg py-3 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold mt-4`}
           >
             Add Product
             <LuMoveRight size={20} />

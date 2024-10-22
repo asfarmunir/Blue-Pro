@@ -7,6 +7,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 import { formUrlQuery } from "@/lib/utils";
 import { BsArrowLeftCircle, BsArrowRightCircle } from "react-icons/bs";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 const Pagination = ({ page, totalPages, urlParamName } ) => {
@@ -27,26 +28,28 @@ const Pagination = ({ page, totalPages, urlParamName } ) => {
 
   return (
     <div
-      className={`
+      className={` w-full flex items-center justify-between
         ${totalPages > 1 ? "flex items-center" : "hidden"}
      gap-4 `}
     >
       <button
-        className=" bg-none  disabled:opacity-50"
+        className=" bg-none disabled:opacity-50 flex items-center gap-2 border font-semibold border-[#D0D5DD]  py-1.5 px-3 rounded-md"
         onClick={() => onClick("prev")}
         disabled={Number(page) <= 1}
       >
-        <BsArrowLeftCircle className="w-4 h-4 2xl:w-6 2xl:h-6 text-primary-50" />
+        <ChevronLeft className="w-5 h-5 2xl:w-6 2xl:h-6 text-primary-50" />
+        Previous
       </button>
       <p className="text-primary-50 text-xs 2xl:text-sm">{`${page} of ${totalPages}`}</p>
 
       <button
         onClick={() => onClick("next")}
-        className=" bg-none  disabled:opacity-50"
+        className=" bg-none disabled:opacity-50 flex items-center gap-2 border font-semibold border-[#D0D5DD]  py-1.5 px-3 rounded-md"
         disabled={Number(page) >= totalPages}
       >
-        <BsArrowRightCircle className="w-4 h-4 2xl:w-6 2xl:h-6 text-primary-50" />
-      </button>
+     <ChevronRight className="w-5 h-5 2xl:w-6 2xl:h-6 text-primary-50" />
+        Next      
+    </button>
     </div>
   );
 };

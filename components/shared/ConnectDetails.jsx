@@ -3,16 +3,16 @@ import Link from "next/link";
 import React from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 
-const page = () => {
+const page = ({ details }) => {
   return (
     <div className=" w-full bg-slate-50  py-3 md:p-3 2xl:p-4 mb-8">
-      <div className=" w-full relative">
+      <div className=" w-full relative h-60 2xl:h-72 bg-[#38B6FF]/10">
         <Image
-          src="/group-cover.svg"
+          src={details.grpImage}
           alt="connect"
           width={200}
           height={200}
-          className=" w-full h-full"
+          className=" w-full h-full object-contain object-center"
         />
         <Link
           href={"/connect"}
@@ -23,32 +23,40 @@ const page = () => {
         <div className=" p-0.5 py-1.5 absolute top-5 right-5 rounded-lg bg-slate-100">
           <Image src="/menu.svg" alt="connect" width={20} height={20} />
         </div>
-        <div className=" p-1.5 absolute top-5 right-16 rounded-md bg-slate-100">
+        <Link
+          href={`/connect/details/${details._id}/request`}
+          className=" p-1.5 absolute top-5 right-16 rounded-md bg-slate-100"
+        >
           <Image
             src="/group-members.svg"
             alt="connect"
             width={20}
             height={20}
           />
-        </div>
+        </Link>
         <div className=" hidden md:block p-4 absolute bottom-5 left-5 rounded-md bg-slate-50  bg-opacity-80">
-          <p className="bg-[#38B6FF]/10 text-[#38B6FF] text-xs px-4 w-fit text-center font-semibold  py-1.5 mb-2 rounded-full">
-            Category
+          <p className="bg-[#38B6FF]/10 capitalize text-[#38B6FF] text-xs px-4 w-fit text-center font-semibold  py-1.5 mb-2 rounded-full">
+            {details.category}
           </p>
-          <h2 className="2xl:text-lg font-bold">
-            PUBLIC PRIVATE GROUP NAME HERE
+          <h2 className="2xl:text-2xl text-xl capitalize font-bold">
+            {details.name}
           </h2>{" "}
           <div className="flex items-center gap-4 mt-2">
             <p className="text-xs inline-flex items-center gap-1 2xl:text-sm ">
               <Image src="/globe.svg" alt="live" width={16} height={16} />
-              Public
+              {details.type}
             </p>
             <p className="text-xs inline-flex items-center gap-1 2xl:text-sm ">
               <Image src="/members.svg" alt="live" width={18} height={18} />
-              2k Members
+              {details.members.length} Members
             </p>
             <p className="text-xs inline-flex items-center gap-1 2xl:text-sm ">
-              Created May 20, 2024{" "}
+              Created{" "}
+              {new Date(details.createdAt).toLocaleDateString("en-US", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
             </p>
           </div>
         </div>
