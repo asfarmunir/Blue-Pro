@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { LuCalendarDays } from "react-icons/lu";
 import Image from "next/image";
 import { getAllPendingJoinRequests } from "@/database/actions/connect.action";
+import RequestApproval from "@/components/shared/RequestApproval";
 
 const page = async () => {
   const allRequests = await getAllPendingJoinRequests();
@@ -83,63 +84,57 @@ const page = async () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {allRequests.pendingRequests.map((request, index) => (
-              <TableRow key={index}>
-                <TableCell className=" text-xs max-w-[120px]  2xl:text-sm  font-semibold">
-                  #{index + 1}
-                </TableCell>
-                <TableCell className="text-xs max-w-[130px] 2xl:text-sm">
-                  <div className="flex items-center justify-center gap-2">
-                    {/* <Image
+            {allRequests.pendingRequests &&
+              allRequests.pendingRequests.map((request, index) => (
+                <TableRow key={index}>
+                  <TableCell className=" text-xs max-w-[120px]  2xl:text-sm  font-semibold">
+                    #{index + 1}
+                  </TableCell>
+                  <TableCell className="text-xs max-w-[130px] 2xl:text-sm">
+                    <div className="flex items-center justify-center gap-2">
+                      {/* <Image
                       src="/avatar.svg"
                       alt="user"
                       width={34}
                       height={34}
                     /> */}
-                    <div className="flex items-center  flex-col ">
-                      <p className=" font-semibold text-lg capitalize">
-                        {request.username}
-                      </p>
-                      <p className="  text-xs 2xl:text-sm">
-                        {request.userEmail}
-                      </p>
-                    </div>{" "}
-                  </div>
-                </TableCell>
-                <TableCell className=" text-xs max-w-[100px] capitalize text-center font-semibold  2xl:text-sm  ">
-                  {request.groupName}
-                </TableCell>
-                <TableCell className=" text-xs max-w-[180px] text-center  2xl:text-sm text-slate-600  ">
-                  {new Date(request.requestedAt).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </TableCell>
-                <TableCell className="  max-w-[130px] text-xs 2xl:text-sm  ">
-                  <div className=" flex items-center gap-2">
-                    <button className="bg-[#FEF3F2] text-red-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
-                      <Image
-                        src="/reject.svg"
-                        alt="eye"
-                        width={18}
-                        height={18}
-                      />
-                      Decline
-                    </button>
-                    <button className="bg-[#E6F6EE] text-green-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
-                      <Image
-                        src="/accept.svg"
-                        alt="eye"
-                        width={18}
-                        height={18}
-                      />
-                      Approve
-                    </button>
-                  </div>
+                      <div className="flex items-center  flex-col ">
+                        <p className=" font-semibold text-lg capitalize">
+                          {request.username}
+                        </p>
+                        <p className="  text-xs 2xl:text-sm">
+                          {request.userEmail}
+                        </p>
+                      </div>{" "}
+                    </div>
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[100px] capitalize text-center font-semibold  2xl:text-sm  ">
+                    {request.groupName}
+                  </TableCell>
+                  <TableCell className=" text-xs max-w-[180px] text-center  2xl:text-sm text-slate-600  ">
+                    {new Date(request.requestedAt).toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell className="  max-w-[130px] text-xs 2xl:text-sm  ">
+                    <RequestApproval
+                      groupId={request.groupId}
+                      userId={request.userId}
+                      path={"/connect/request"}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+
+            {!allRequests.pendingRequests && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No Pending Requests
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

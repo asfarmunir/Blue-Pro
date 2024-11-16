@@ -254,7 +254,7 @@ export const getAllPendingJoinRequests = async () => {
 
 
 
-export const handleJoinRequest = async (groupId, userId, action) => {
+export const handleJoinRequest = async (groupId, userId, action, path) => {
     try {
         await connectToDatabase();
 
@@ -321,7 +321,7 @@ export const handleJoinRequest = async (groupId, userId, action) => {
                 })
             );
         }
-        revalidatePath(`/connect/details/${groupId}/request`);
+        revalidatePath(path);
         return JSON.parse(
             JSON.stringify({
                 error: "Invalid action. Must be 'approve' or 'disapprove'.",

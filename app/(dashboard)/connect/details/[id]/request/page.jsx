@@ -71,11 +71,12 @@ const page = async ({ params: { id } }) => {
                     <RequestApproval
                       groupId={request.groupId}
                       userId={request.userId}
+                      path={`/connect/details/${id}/request`}
                     />
                   </TableCell>
                 </TableRow>
               ))}
-            {!requests && (
+            {!requests.pendingRequests.length && (
               <TableRow>
                 <TableCell colSpan={4} className="text-center">
                   No Pending Requests

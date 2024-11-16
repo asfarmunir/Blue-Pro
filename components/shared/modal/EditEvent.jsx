@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,15 +16,20 @@ import { generateClientDropzoneAccept } from "uploadthing/client";
 import { generatePermittedFileTypes } from "uploadthing/client";
 import { convertFileToUrl } from "@/lib/utils";
 import { toast } from "react-toastify";
-import { createActivity } from "@/database/actions/activity.action";
+import {
+  createActivity,
+  getSingleActivity,
+  updateActivity,
+} from "@/database/actions/activity.action";
 
-const AddEvent = () => {
+const AddEvent = ({ id }) => {
   const [eventType, setEventType] = useState("quick");
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [files, setFiles] = useState([]);
+  const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [scheduleDate, setScheduleDate] = useState("");
@@ -35,7 +40,7 @@ const AddEvent = () => {
 
   if (files.length > 0) {
     if (files.length > 1) {
-      toast.error("You can only upload one image");
+      toast.error("You can only upload one image ");
       setFiles([]);
       uploadedImageUrl = [];
     }
@@ -65,22 +70,10 @@ const AddEvent = () => {
   });
 
   const handleSubmit = async () => {
-    if (!name || !description || !link) {
-      return toast.error("Please fill all fields");
-    }
-
-    if (eventType === "schedule" && (!scheduleDate || !scheduleTime)) {
-      return toast.error("Please fill all fields");
-    }
-
-    if (files.length === 0) {
-      return toast.error("Please upload an image");
-    }
-
     setLoading(true);
     let uploadedImagesUrl = [];
 
-    toast.loading("Adding Event...");
+    toast.loading("Updating Event...");
 
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
@@ -98,20 +91,19 @@ const AddEvent = () => {
       link,
       scheduleDate,
       scheduleTime,
-      image: uploadedImagesUrl[0],
+      image: uploadedImagesUrl.length > 0 ? uploadedImagesUrl[0] : image,
     };
 
-    const response = await createActivity(eventData, "/activity");
-    if (response.status !== 201) {
+    const response = await updateActivity(id, eventData, "/activity");
+    if (response.status !== 200) {
       toast.dismiss();
-      toast.error("Failed to add event");
+      toast.error("Failed to Edit event");
       setLoading(false);
       return;
     }
 
     toast.dismiss();
-    toast.success("Event added successfully");
-    console.log("Event data to submit:", eventData);
+    toast.success("Event Updated successfully");
     setName("");
     setDescription("");
     setLink("");
@@ -123,23 +115,41 @@ const AddEvent = () => {
     setLoading(false);
   };
 
+  const fetchActivity = async (id) => {
+    const res = await getSingleActivity(id);
+    if (res.status === 200) {
+      const { activity } = res;
+      setEventType(activity.type);
+      setName(activity.name);
+      setDescription(activity.description);
+      setLink(activity.link);
+      setScheduleDate(activity.scheduleDate);
+      setScheduleTime(activity.scheduleTime);
+      setImage(activity.image);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchActivity(id);
+      // Fetch product details
+    }
+  }, [id]);
+
   return (
     <Dialog>
       <DialogTrigger
         ref={modalRef}
-        className="bg-[#38B6FF] text-white font-bold inline-flex items-center gap-2 px-4 py-3.5 text-sm 2xl:text-base rounded-md"
+        className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black text-sm font-semibold  py-2 hover:text-white"
       >
-        Add Event
-        <BiSolidMessageSquareAdd className="ml-2" size={24} />
+        Edit Event
       </DialogTrigger>
       <DialogContent
         className="w-[90vw] sm:max-w-[750px] text-sm text-black"
         style={{ backgroundColor: "white" }}
       >
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold">
-            {eventType === "quick" ? "Add Quick Event" : "Schedule Event"}
-          </DialogTitle>
+          <DialogTitle className="text-lg font-bold">Edit Event</DialogTitle>
         </DialogHeader>
         <div className="md:h-72 2xl:h-full overflow-y-auto px-3 pb-5">
           <div className="flex flex-col gap-1 w-full">
@@ -233,7 +243,7 @@ const AddEvent = () => {
               <span className="px-1 text-red-600">jpg, mp4, webp</span>
             </p>
           </div> */}
-          {files.length > 0 ? (
+          {/* {files.length > 0 ? (
             <div className="w-full flex  pt-4 items-center gap-2 mt-2">
               {files.map((file, index) => (
                 <div key={index} className="w-32 h-32 relative">
@@ -281,6 +291,54 @@ const AddEvent = () => {
                 <span className="px-1 text-red-600"> jpg, mp4, webp</span>
               </p>
             </div>
+          )} */}
+
+          {files.length > 0 ? (
+            <div className="w-full flex pt-4 items-center gap-2 mt-2">
+              {files.map((file, index) => (
+                <div key={index} className="w-32 h-32 relative">
+                  <Image
+                    src={URL.createObjectURL(file)}
+                    alt="Upload"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-md"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                className={`text-xs  2xl:text-sm font-semibold h-fit text-white bg-red-600
+                      transition-all duration-500 
+                       px-6 py-2 rounded-md
+                }`}
+                onClick={() => {
+                  setFiles([]);
+                  uploadedImageUrl = [];
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div
+              {...getRootProps()}
+              className="w-full p-4 pt-8 justify-center flex flex-col items-center gap-2 border border-dotted rounded-lg"
+            >
+              <>
+                <Image
+                  src={image}
+                  alt="Upload"
+                  width={70}
+                  height={70}
+                  className=" cursor-pointer rounded-md"
+                />
+                <input {...getInputProps()} className=" bg-red-400" />
+                <h2 className="2xl:text-lg font-semibold cursor-pointer">
+                  Change Image
+                </h2>
+              </>
+            </div>
           )}
         </div>
         <button
@@ -288,7 +346,7 @@ const AddEvent = () => {
           disabled={loading}
           className="w-full disabled:opacity-50 rounded-lg py-3 bg-[#38B6FF] inline-flex capitalize items-center justify-center text-white gap-3 font-semibold"
         >
-          {eventType === "quick" ? "Add" : "Schedule"} Event
+          {loading ? "Updating Event..." : "Update Event"}
         </button>
       </DialogContent>
     </Dialog>

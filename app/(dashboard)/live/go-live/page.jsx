@@ -1,11 +1,25 @@
+"use client";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useTransition } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoArrowDown } from "react-icons/io5";
+import { toast } from "react-toastify";
+import { createIngress } from "@/database/actions/stream.action";
+import { IngressType } from "livekit-server-sdk";
+import { useSession } from "next-auth/react";
+const GoLive = () => {
+  const [isPending, startTransition] = useTransition();
 
-const page = () => {
+  const session = useSession();
+
+  const create = async () => {
+    console.log("🚀 ~ createIngress ~ session:", session.data.user._id);
+    const res = await createIngress(session.data.user._id);
+    console.log("🚀 ~ createIngress ~ res:", res);
+  };
+
   return (
     <div className=" w-full p-3 2xl:p-4 space-y-4 bg-slate-50 pb-16">
       <Link href={"/live"} className="flex items-center gap-2">
@@ -181,6 +195,12 @@ const page = () => {
         </div>
         <div className=" bg-white rounded-md shadow w-full h-fit md:w-[40%] p-6">
           <h2 className="text-lg 2xl:text-xl font-bold">Session Details</h2>
+          <button
+            onClick={create}
+            className={` disabled:opacity-40 bg-blue-500 px-5 py-2 rounded-full text-white`}
+          >
+            create ingress
+          </button>
           <div className="flex flex-col gap-1 my-3 w-full">
             <label
               htmlFor="name"
@@ -257,4 +277,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default GoLive;

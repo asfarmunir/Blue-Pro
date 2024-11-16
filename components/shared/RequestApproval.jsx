@@ -5,12 +5,12 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-const RequestApproval = ({ groupId, userId }) => {
+const RequestApproval = ({ groupId, userId, path }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const handleClick = async (action) => {
     setLoading(true);
-    const res = await handleJoinRequest(groupId, userId, action);
+    const res = await handleJoinRequest(groupId, userId, action, path);
     if (res.status !== 200) {
       toast.error(res.error);
       setLoading(false);
