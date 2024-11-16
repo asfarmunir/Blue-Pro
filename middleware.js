@@ -3,10 +3,9 @@ export { default } from "next-auth/middleware"
 export const config = {
   matcher: [
     '/',
-    '/user',
-    '/activity',
-    '/connect',
-    '/live',
-    '/inventory',
+    // '/user',
+    // '/activity',
+    // '/connect',
+    // '/inventory',
   ],
 }

@@ -4,7 +4,7 @@ import { WebhookReceiver } from "livekit-server-sdk";
 import { connectToDatabase } from "../../../database";
 import streamModal from "../../../database/stream.modal";
 
-const webhookReceiver = new WebhookReceiver({
+const receiver = new WebhookReceiver({
     apiKey: process.env.LIVEKIT_API_KEY,
     apiSecret: process.env.LIVEKIT_API_SECRET,
     });
@@ -25,7 +25,7 @@ const webhookReceiver = new WebhookReceiver({
             }
         }
 
-        const event = await webhookReceiver.receive(body, authorization);
+        const event = await receiver.receive(body, authorization);
         console.log("🚀 ~ file: route.js ~ line 85 ~ POST ~ event", event)
 
 
