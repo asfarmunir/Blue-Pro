@@ -2,20 +2,34 @@
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoArrowDown } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { createIngress } from "@/database/actions/stream.action";
+import { createIngress, getUserStream } from "@/database/actions/stream.action";
 import { IngressType } from "livekit-server-sdk";
 import { useSession } from "next-auth/react";
+import StreamPlayer from "@/components/shared/StreamPlayer";
 const GoLive = () => {
   const [isPending, startTransition] = useTransition();
-
+  const [stream, setStream] = useState(null);
   const session = useSession();
 
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      const getStream = async () => {
+        const userStream = await getUserStream(session.data.user._id);
+        setStream(userStream);
+      };
+      getStream();
+    }
+  }, [session]);
+
+  if (session.status === "loading") {
+    return <div>Loading...</div>;
+  }
+
   const create = async () => {
-    console.log("🚀 ~ createIngress ~ session:", session.data.user._id);
     const res = await createIngress(session.data.user._id);
     console.log("🚀 ~ createIngress ~ res:", res);
   };
@@ -50,15 +64,8 @@ const GoLive = () => {
             <Image src="/link.svg" alt="live" width={15} height={15} />
             www.facebook.com
           </div>
-          <div className=" w-full">
-            <Image
-              alt="live"
-              src={"/streaming.svg"}
-              width={500}
-              height={300}
-              className="rounded-md mt-4"
-            />
-          </div>
+          <StreamPlayer user={session.data.user} stream={stream} />
+
           <div className="flex  items-center justify-between my-3">
             <div className=" flex gap-1 items-center">
               <p className="bg-[#38B6FF]/15 px-2 py-1 rounded-full text-xs 2xl:text-sm text-[#38B6FF]">
