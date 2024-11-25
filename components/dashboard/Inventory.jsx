@@ -59,10 +59,10 @@ const Inventory = ({
       <div className="border rounded-xl p-5 mb-6 ">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold">Award List</h2>
-          <Search />
+          {/* <Search /> */}
 
           <div className="flex items-center gap-2">
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
@@ -91,7 +91,7 @@ const Inventory = ({
                   Delete
                 </Button>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
             <AddReward allProducts={products} />
           </div>
         </div>

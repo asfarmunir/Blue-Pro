@@ -72,13 +72,15 @@ const Main = ({ data, pagination, recentUsers }) => {
           <TabsContent value="feed">
             <FeedPost data={data} pagination={pagination} />
           </TabsContent>
-          <TabsContent value="learning">Change your password here.</TabsContent>
+          <TabsContent value="learning">
+            <FeedPost data={data} pagination={pagination} />
+          </TabsContent>
         </Tabs>
       </div>
       <div className="border rounded-xl p-5 mb-8  ">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold">New User Registrations</h2>
-          <Search />
+          {/* <Search /> */}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -1,7 +1,7 @@
 'use server'
 
 import { connectToDatabase } from "..";
-import streamModal from "../stream.modal";
+import Stream from "../stream.modal";
 
 
 import {
@@ -15,6 +15,7 @@ import User from "../user.modal";
 import {
 TrackSource} from "livekit-server-sdk/dist/proto/livekit_models";
 import { revalidatePath } from "next/cache";
+import { type } from "os";
 
 const roomService = new RoomServiceClient(
     process.env.NEXT_PUBLIC_LIVEKIT_APP_URL,
@@ -50,7 +51,7 @@ await ingressClient.deleteIngress(ingress.ingressId);
 }
 
 
-export const createIngress = async (id) => {
+export const createIngress = async (id,data) => {
 
     try {
       
@@ -105,14 +106,19 @@ export const createIngress = async (id) => {
         }
 
         const streamData = {
-            name: userData.username,
             ingressId: ingress.ingressId,
             serverUrl: ingress.url,
             streamKey: ingress.streamKey,
-            userId: userData._id
+            userId: userData._id,
+            name: data.name,
+            thumbnail: data.thumbnail,
+            tags: data.tags,
+            externalUrl: data.externalUrl,
+            description: data.description,
+
         }
 
-        const stream = new streamModal(streamData);
+        const stream = new Stream(streamData);
         await stream.save();
 
         revalidatePath('/live/go-live');
@@ -148,7 +154,7 @@ export const getUserStream = async (id) => {
             }));
         }
 
-        const streamData = await streamModal.findOne({userId: userData._id});
+        const streamData = await Stream.findOne({userId: userData._id});
 
         if(!streamData){
             return JSON.parse(JSON.stringify({
@@ -170,5 +176,171 @@ export const getUserStream = async (id) => {
             status: 500,
             message: "Failed to get user stream"
         }));
+    }
+}
+
+export const getStreamById = async (id) => {
+    try {
+        await connectToDatabase();
+        const streamData = await Stream.findById(id);
+
+        if(!streamData){
+            return JSON.parse(JSON.stringify({
+                status: 404,
+                message: "Stream not found"
+            }));
+        }
+
+        return JSON.parse(JSON.stringify({
+
+            status: 200,
+            data: streamData
+        }));
+
+    } catch (error) {
+        console.error("Error getting stream by id:", error);
+        return JSON.parse(JSON.stringify({
+            status: 500,
+            message: "Failed to get stream by id"
+        }));
+    }
+}
+
+
+// export const getAllStreams = async () => {
+
+//     try {
+//         await connectToDatabase();
+//         const streams = await Stream.find({});
+
+//         if(!streams){
+//             return JSON.parse(JSON.stringify({
+//                 status: 404,
+//                 message: "Streams not found",
+//             }));
+//         }
+
+//         return JSON.parse(JSON.stringify({
+//             status: 200,
+//             data: streams
+//         }));
+
+//     } catch (error) {
+//         console.error("Error getting all streams:", error);
+//         return JSON.parse(JSON.stringify({
+//             status: 500,
+//             message: "Failed to get all streams"
+//         }));
+//     }
+// }
+
+export const getAllStreams = async ({page = 1, limit = 6, name}) => {
+    console.log("🚀 ~ getAllStreams ~ name:", name)
+  try {
+    await connectToDatabase();
+
+    const query = name
+      ? {  name : { $regex: name, $options: "i" } } // Case-insensitive search by stream title
+      : {};
+
+    const totalStreams = await Stream.countDocuments(query); // Total streams matching the query
+    const streams = await Stream.find(query)
+      .skip((page - 1) * limit) // Skip documents for pagination
+      .limit(limit); // Limit number of documents
+
+    if (!streams || streams.length === 0) {
+      return JSON.parse(
+        JSON.stringify({
+          status: 200,
+          data: [],
+          total: 0,
+          message: name
+            ? `No streams found for the search term: "${name}"`
+            : "No streams available",
+        })
+      );
+    }
+
+    return JSON.parse(
+      JSON.stringify({
+        status: 200,
+        data: streams,
+        total: Math.ceil(totalStreams / limit),
+        message: "Streams fetched successfully",
+      })
+    );
+  } catch (error) {
+    console.error("Error getting all streams:", error);
+    return JSON.parse(
+      JSON.stringify({
+        status: 500,
+        message: "Failed to get all streams",
+      })
+    );
+  }
+};
+
+
+export const updateStreamStatus = async (id, status) => {
+    
+        try {
+            await connectToDatabase();
+            const streamData = await Stream.findById(id);
+
+            if(!streamData){
+                return JSON.parse(JSON.stringify({
+                    status: 404,
+                    message: "Stream not found"
+                }));
+            }
+
+            if(status === "live"){
+                streamData.isLive = true;
+            }
+            else if(status === "offline"){
+                streamData.isLive = false;
+            }
+           
+            
+            await streamData.save();
+
+            revalidatePath('/live');
+
+            return JSON.parse(JSON.stringify({
+                status: 200,
+                message: "Stream status updated successfully"
+            }));
+
+        } catch (error) {
+
+            console.error("Error updating stream status:", error);
+            return JSON.parse(JSON.stringify({
+                status: 500,
+                message: "Failed to update stream status"
+            }));
+        }
+
+}
+
+
+export const deleteStreamById = async (id) => {
+    try {
+        
+        await connectToDatabase();
+        await Stream.findByIdAndDelete(id);
+        revalidatePath('/live');
+
+        return {
+            status: 200,
+            message: "Stream deleted successfully"
+        }
+
+    } catch (error) {
+        
+        console.error("Error deleting stream:", error);
+        return {
+            status: 500,
+            message: "Failed to delete stream"
+        }
     }
 }

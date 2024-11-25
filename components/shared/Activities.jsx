@@ -75,10 +75,10 @@ const Live = ({ activities, page, totalPages }) => {
                 </Button>
               </DropdownMenuContent>
             </DropdownMenu> */}
-            <button className=" bg-[#38B6FF] rounded-lg px-4 py-2 font-semibold text-white inline-flex items-center gap-2">
+            {/* <button className=" bg-[#38B6FF] rounded-lg px-4 py-2 font-semibold text-white inline-flex items-center gap-2">
               Export
               <Image src="/export.svg" alt="live" width={17} height={17} />
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="my-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
@@ -90,7 +90,7 @@ const Live = ({ activities, page, totalPages }) => {
                 </h2>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       className="2xl:h-8 2xl:w-8 w-6 h-6 p-0"
@@ -167,38 +167,42 @@ const Live = ({ activities, page, totalPages }) => {
                   />
                 </div>
                 <div className="flex flex-col gap-2.5">
-                  {activity.type === "schedule " ? (
-                    <div className="flex items-center gap-4">
-                      <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
-                        <Image
-                          src="/clock2.svg"
-                          alt="live"
-                          width={16}
-                          height={16}
-                        />
-                        {activity.scheduleTime} hours
-                      </p>
-                      <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
-                        <Image
-                          src="/calender.svg"
-                          alt="live"
-                          width={15}
-                          height={15}
-                        />
-                        {activity.scheduleDate}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
-                      <Image
-                        src="/calender.svg"
-                        alt="live"
-                        width={15}
-                        height={15}
-                      />
-                      Happening Now
+                  {
+                    <p className=" bg-[#38B6FF]/10 p-1.5 px-3 capitalize rounded-full text-blue-500 font-semibold text-xs 2xl:text-sm w-fit">
+                      {activity.type === "quick" ? (
+                        <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
+                          <Image
+                            src="/calender.svg"
+                            alt="live"
+                            width={15}
+                            height={15}
+                          />
+                          Happening Now
+                        </p>
+                      ) : (
+                        <div className="flex items-center gap-4">
+                          <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
+                            <Image
+                              src="/clock2.svg"
+                              alt="live"
+                              width={16}
+                              height={16}
+                            />
+                            {activity.scheduleTime} hours
+                          </p>
+                          <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
+                            <Image
+                              src="/calender.svg"
+                              alt="live"
+                              width={15}
+                              height={15}
+                            />
+                            {activity.scheduleDate}
+                          </p>
+                        </div>
+                      )}
                     </p>
-                  )}
+                  }
                   <p className=" text-sm 2xl:text-base">
                     {activity.description.length > 100
                       ? activity.description.substring(0, 100) + "..."
@@ -212,6 +216,13 @@ const Live = ({ activities, page, totalPages }) => {
               </div>
             </div>
           ))}
+          {activities.length === 0 && (
+            <div className=" w-full col-span-2  items-center justify-center">
+              <h2 className="text-lg font-semibold text-center">
+                No Activities Found!
+              </h2>
+            </div>
+          )}
         </div>
         <div className=" w-full mt-4">
           <Pagination page={page} totalPages={totalPages} urlParamName="page" />

@@ -9,6 +9,19 @@ const streamSchema = new Schema({
     thumbnail :{
         type:String,
     },
+    tags: {
+
+        type: [String],
+       },       
+
+    externalUrl: {
+       type: String,
+        },
+
+      description: {
+        type: String,
+        required: true,
+    },  
     ingressId :{
         type: String,
     },

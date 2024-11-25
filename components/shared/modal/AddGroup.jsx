@@ -139,7 +139,7 @@ const AddReward = () => {
     <Dialog>
       <DialogTrigger
         ref={modalRef}
-        className="bg-[#38B6FF] text-white font-bold px-4 py-2.5 text-sm rounded-md"
+        className="bg-[#38B6FF] border-2 border-[#38B6FF] text-white font-bold px-4 py-2.5 text-sm rounded-md"
       >
         Add Group
       </DialogTrigger>

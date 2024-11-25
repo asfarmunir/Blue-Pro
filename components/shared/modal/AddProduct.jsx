@@ -23,10 +23,10 @@ import { convertFileToUrl } from "@/lib/utils";
 
 const AddReward = () => {
   // Form state
-  const [productName, setProductName] = useState("football");
+  const [productName, setProductName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [bluepoints, setBluepoints] = useState("20");
-  const [description, setDescription] = useState("lesgooo");
+  const [bluepoints, setBluepoints] = useState("");
+  const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
   const modalRef = useRef(null);
 
