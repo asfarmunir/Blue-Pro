@@ -1,17 +1,19 @@
 import React from "react";
-import Dropdown from "./Dropdown";
 import { TbArrowBigUpLines, TbArrowBigDownLines } from "react-icons/tb";
-import Image from "next/image";
 import SummaryCard from "./SummaryCard";
+import { getCountOfAllUsers } from "@/database/actions/user.action";
 
-const Summary = () => {
+const Summary = async () => {
+  const numberOfUsers = await getCountOfAllUsers();
+  console.log("🚀 ~ Summary ~ numberOfUsers:", numberOfUsers);
+
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-2">
         <div>
           <SummaryCard
             title={"Active Users"}
-            number={3632}
+            number={numberOfUsers}
             description={"Overall last month"}
             arrow={<TbArrowBigUpLines />}
             percentage={30.5626}

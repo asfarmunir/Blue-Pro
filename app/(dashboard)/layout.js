@@ -41,7 +41,7 @@ const DashboardLayout = ({ children }) => {
         {/* <!-- Main content --> */}
         <div className="flex flex-col  md:w-[80%] h-screen overflow-hidden ">
           <Navbar/>
-          <div className="p-4  overflow-y-auto pb-8 min-h-screen z-50 bg-[#FAFCFF] border-l border-t">
+          <div className="p-4  overflow-y-auto pb-8 min-h-screen z-40 bg-[#FAFCFF] border-l border-t">
             {children}
           </div>
         </div>

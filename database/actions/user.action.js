@@ -15,6 +15,19 @@ export const getRecentUsers = async () => {
     }
 };
 
+export const getCountOfAllUsers = async()=>{
+    
+  try {
+    await connectToDatabase();
+    const totalUsers = await User.countDocuments();
+    return totalUsers;
+  } catch (error) {
+    console.error("Get total users failed", error);
+    return 0;
+  }
+}
+
+
 export const getAllUsers = async ({
   page = 1, // Default to page 1 if not provided
   limit = 8, // Default limit to 8 if not provided

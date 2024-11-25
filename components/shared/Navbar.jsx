@@ -13,7 +13,7 @@ const Navbar = () => {
         <HamBurgerMenu />
       </div>
       <div className="flex items-center pr-4 text-black space-x-5">
-        <NotificationBadge />
+        {/* <NotificationBadge /> */}
         <div className="flex space-x-1 text-sm px-3 2xl:text-base 2xl:px-4 items-center bg-[#F2F2F2] rounded-full p-2">
           <MdLanguage className=" text-lg 2xl:text-xl" />
           <div>EN</div>

@@ -9,7 +9,6 @@ const SummaryCard = ({
   chart,
   arrow,
   number,
-  color,
 }) => {
   return (
     <div className="p-4 border rounded-lg">

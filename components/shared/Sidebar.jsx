@@ -11,7 +11,7 @@ import { LiaHandshake } from "react-icons/lia";
 import { IoSettingsOutline } from "react-icons/io5";
 import Image from "next/image";
 
-const sidebarTabs = [
+export const sidebarTabs = [
   {
     name: "Dashboard",
     icon: <BiSolidDashboard />,
