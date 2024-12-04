@@ -54,7 +54,7 @@ const Inventory = ({
   const modalRef = useRef(null);
   return (
     <div style={{ backgroundColor: "white" }} className="pb-8">
-      <Summary />
+      {/* <Summary /> */}
 
       <div className="border rounded-xl p-5 mb-6 ">
         <div className="flex justify-between items-center mb-8">

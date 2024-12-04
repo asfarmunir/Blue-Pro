@@ -1,4 +1,4 @@
-'use server'
+"use server"
 
 import Group from '@/database/connect.modal';
 import { connectToDatabase } from "..";

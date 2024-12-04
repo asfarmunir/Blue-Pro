@@ -16,9 +16,11 @@ import { useSession } from "next-auth/react";
 import StreamPlayer from "@/components/shared/StreamPlayer";
 import { Loader } from "lucide-react";
 import { VscCopy } from "react-icons/vsc";
+import { useRouter } from "next/navigation";
 
 const GoLive = ({ params: { id } }) => {
   const [stream, setStream] = useState(null);
+  const router = useRouter();
   console.log("🚀 ~ GoLive ~ stream:", stream);
   const session = useSession();
 
@@ -29,8 +31,10 @@ const GoLive = ({ params: { id } }) => {
         setStream(userStream.data);
       };
       getStream();
+    } else if (session.status === "unauthenticated") {
+      router.push("/auth/login");
     }
-  }, [session, id]);
+  }, [session, id, router]);
 
   if (session.status === "loading" || !stream) {
     return (

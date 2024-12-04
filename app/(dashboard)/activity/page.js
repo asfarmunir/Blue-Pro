@@ -12,7 +12,6 @@ const page = async ({ searchParams }) => {
     limit: 4,
     search
   });
-  console.log("🚀 ~ page ~ allActivities:", allActivities)
   return (
     <Activities activities={allActivities.activities} 
     totalPages={allActivities.totalPages}

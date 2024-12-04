@@ -5,7 +5,6 @@ import { getCountOfAllUsers } from "@/database/actions/user.action";
 
 const Summary = async () => {
   const numberOfUsers = await getCountOfAllUsers();
-  console.log("🚀 ~ Summary ~ numberOfUsers:", numberOfUsers);
 
   return (
     <div>

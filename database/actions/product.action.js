@@ -1,4 +1,4 @@
-'use server'
+"use server"
 import { connectToDatabase } from "..";
 import Product from '@/database/product.modal';
 import { revalidatePath } from "next/cache";

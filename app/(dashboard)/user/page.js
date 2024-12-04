@@ -29,8 +29,6 @@ async function User({ searchParams }) {
 
   const page = Number(searchParams.page) || 1;
   const name = searchParams.name|| undefined;
-  console.log("🚀 ~ User ~ name:", name)
-
   const allUsers =  await getAllUsers(
     {
       page,
@@ -41,7 +39,7 @@ async function User({ searchParams }) {
 
   return (
     <div className="" style={{ backgroundColor: "white" }}>
-      <Summary />
+      {/* <Summary /> */}
 
       <div className="border rounded-xl py-7 mb-4 px-6">
         <div className="flex justify-between items-center mb-8">

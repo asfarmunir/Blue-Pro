@@ -1,4 +1,4 @@
-'use server'
+"use server"
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "..";
 import User from '@/database/user.modal';
@@ -33,7 +33,6 @@ export const getAllUsers = async ({
   limit = 8, // Default limit to 8 if not provided
   name, // Username to search for
 }) => {
-  console.log("🚀 ~ name:", name)
   try {
     await connectToDatabase();
 

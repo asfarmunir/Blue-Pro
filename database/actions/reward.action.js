@@ -1,4 +1,4 @@
-'use server'
+"use server"
 import Reward from "../reward.modal";
 import { connectToDatabase } from "..";
 import { revalidatePath } from "next/cache";

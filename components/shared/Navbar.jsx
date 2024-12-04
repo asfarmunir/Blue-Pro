@@ -9,7 +9,7 @@ import { IoIosArrowDown } from "react-icons/io";
 const Navbar = () => {
   return (
     <div className="flex items-center justify-between h-16 bg-white md:px-2 2xl:px-10 py-5 2xl:py-8">
-      <div className="flex items-center px-4">
+      <div className="flex md:opacity-0 items-center px-4">
         <HamBurgerMenu />
       </div>
       <div className="flex items-center pr-4 text-black space-x-5">
@@ -30,10 +30,10 @@ const Navbar = () => {
                   "
             alt="profile"
           />
-          <IoIosArrowDown
+          {/* <IoIosArrowDown
             className="
                 text-lg 2xl:text-xl"
-          />
+          /> */}
         </div>
       </div>
     </div>

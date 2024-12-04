@@ -1,4 +1,4 @@
-'use server'
+"use server"
 import { AccessToken } from "livekit-server-sdk";
 import { getUserById } from "./user.action";
 import { connectToDatabase } from "..";
