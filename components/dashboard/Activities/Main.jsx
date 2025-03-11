@@ -73,7 +73,7 @@ const Main = ({ data, pagination, recentUsers }) => {
             <FeedPost data={data} pagination={pagination} />
           </TabsContent>
           <TabsContent value="learning">
-            <FeedPost data={data} pagination={pagination} />
+            <p>heheh</p>
           </TabsContent>
         </Tabs>
       </div>

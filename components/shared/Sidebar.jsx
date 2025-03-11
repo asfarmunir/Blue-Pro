@@ -39,8 +39,14 @@ export const sidebarTabs = [
   {
     name: "Connect Management",
     icon: <LiaHandshake />,
-    img: "/live.svg",
+    img: "/connect.png",
     link: "/connect",
+  },
+  {
+    name: "Manage Feed and Learn",
+    icon: <LiaHandshake />,
+    img: "/feedAndLearn.svg",
+    link: "/feed-learn",
   },
   {
     name: "Activity Management",
