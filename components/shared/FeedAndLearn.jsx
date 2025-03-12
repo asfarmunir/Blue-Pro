@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Search from "@/components/shared/Search";
 import {
   DropdownMenu,
@@ -17,8 +17,42 @@ import Link from "next/link";
 import Pagination from "./Pagination";
 import { HiDotsVertical } from "react-icons/hi";
 import DeletePost from "@/components/shared/modal/DeletePost";
+import axios from "axios";
 const FeedandLearn = ({ groups, totalPages, page }) => {
   const [tab, setTab] = useState("learn");
+  const [learnPosts, setLearnPosts] = useState([]);
+  const [feedPosts, setFeedPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async (type) => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${type}`
+      );
+      console.log("🚀 ~ fetchData ~ res:", res.data);
+      if (type === "learn") {
+        setLearnPosts(res.data);
+      } else {
+        setFeedPosts(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      (tab === "learn" && learnPosts.length === 0) ||
+      (tab === "feed" && feedPosts.length === 0)
+    ) {
+      fetchData(tab);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
+
   return (
     <div className=" p-1.5 md:p-3 2xl:p-5 w-full bg-slate-50 ">
       <div className="flex flex-col md:flex-row gap-6 items-center justify-between w-full">
@@ -73,7 +107,7 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
           </h2>
 
           <div className="hidden md:flex items-center gap-2">
-            <Search />
+            {/* <Search /> */}
             {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -106,87 +140,222 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
             </DropdownMenu> */}
           </div>
         </div>
-        {groups && groups.length ? (
-          <div className="my-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-            {groups.map((group) => (
-              <div key={group._id} className="rounded-lg bg-[#FAFAFA] border">
-                <div className="flex  p-3.5 py-4 items-center justify-between">
-                  <h2 className=" font-bold capitalize 2xl:text-lg">
-                    {group.name}
-                  </h2>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <HiDotsVertical className="2xl:text-lg" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="px-4 bg-white">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator className="mb-3" />
+        {tab === "learn" &&
+          (learnPosts && learnPosts.length ? (
+            <div className="my-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              {learnPosts.map((learn) => (
+                <div key={learn._id} className="rounded-lg bg-[#FAFAFA] border">
+                  <div className="flex  p-3.5 py-4 items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <h2 className=" font-bold capitalize 2xl:text-lg">
+                        {learn.title}
+                      </h2>
+                      <p className=" w-2 h-2 rounded-full bg-[#D9D9D9]"></p>
+                      <h2 className=" font-bold capitalize 2xl:text-lg">
+                        {learn.category}
+                      </h2>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <HiDotsVertical className="2xl:text-lg" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="px-4 bg-white"
+                      >
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator className="mb-3" />
 
-                      <Link href={`/feed-learn/${tab}/1`}>
-                        <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
-                          View Details
-                        </Button>
-                      </Link>
+                        <Link href={`/feed-learn/${tab}/${learn._id}`}>
+                          <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
+                            View Details
+                          </Button>
+                        </Link>
 
-                      <hr
-                        className="pt-2 border-t-1 block w-full"
-                        style={{ borderColor: "#CCCCCD" }}
-                      />
-                      <DeletePost />
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <div className=" w-full border-x border-b rounded-lg px-4 flex items-center gap-4 py-5 bg-white">
-                  <div className=" w-[135px] 2xl:w-[150px] h-[120px] 2xl:h-[154px] rounded-lg overflow-hidden ">
-                    <Image
-                      src={group.grpImage}
-                      alt="live"
-                      width={124}
-                      height={124}
-                      className=" w-full h-full object-cover object-center"
-                    />
+                        <hr
+                          className="pt-2 border-t-1 block w-full"
+                          style={{ borderColor: "#CCCCCD" }}
+                        />
+                        <DeletePost />
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <div className="flex flex-col gap-2.5 w-fit">
-                    <p className=" bg-[#38B6FF]/10 p-1.5 px-3 capitalize rounded-full text-blue-500 font-semibold text-xs 2xl:text-sm w-fit">
-                      {" "}
-                      {group.category}
-                    </p>
+                  <div className=" w-full border-x border-b rounded-lg px-4 flex items-center gap-4 py-5 bg-white">
+                    <div className=" w-[135px] 2xl:w-[150px] h-[120px] 2xl:h-[154px] rounded-lg overflow-hidden ">
+                      <Image
+                        src={learn.media}
+                        alt="live"
+                        width={124}
+                        height={124}
+                        className=" w-full h-full object-cover object-center"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2.5 w-fit">
+                      {learn.tags && learn.tags.length ? (
+                        <div className="flex gap-2">
+                          {learn.tags.map((tag, idx) => (
+                            <p
+                              key={idx}
+                              className="text-xs 2xl:text-sm bg-[#F6F6F6] px-2 py-1 rounded-md"
+                            >
+                              {tag}
+                            </p>
+                          ))}
+                        </div>
+                      ) : null}
 
-                    <p className=" text-sm 2xl:text-base max-w-[20rem] w-full">
-                      {group.description}
-                    </p>
-                    <div className=" flex gap-1 items-center">
-                      <div className="bg-[#FFDDDD] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
-                        <Image
-                          src="/likes.svg"
-                          alt="live"
-                          width={18}
-                          height={18}
-                        />
-                        <p className="text-xs 2xl:text-sm font-semibold">12</p>
-                      </div>
-                      <div className="bg-[#F6F6F6] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
-                        <Image
-                          src="/comment.svg"
-                          alt="live"
-                          width={20}
-                          height={20}
-                        />
-                        <p className="text-xs 2xl:text-sm font-semibold">12</p>
+                      <p className=" text-sm 2xl:text-base max-w-[20rem] w-full">
+                        {learn.description}
+                      </p>
+                      <div className=" flex gap-1 items-center">
+                        <div className="bg-[#FFDDDD] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
+                          <Image
+                            src="/likes.svg"
+                            alt="live"
+                            width={18}
+                            height={18}
+                          />
+                          <p className="text-xs 2xl:text-sm font-semibold">
+                            {learn.likes.length}
+                          </p>
+                        </div>
+                        <div className="bg-[#F6F6F6] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
+                          <Image
+                            src="/comment.svg"
+                            alt="live"
+                            width={20}
+                            height={20}
+                          />
+                          <p className="text-xs 2xl:text-sm font-semibold">
+                            {learn.comments.length}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className=" w-full  items-center justify-center">
-            <h2 className="text-lg font-semibold text-center">
-              No Connects Found!
-            </h2>
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className=" w-full  items-center justify-center">
+              <h2 className="text-lg font-semibold text-center">
+                No Connects Found!
+              </h2>
+            </div>
+          ))}
+        {tab === "feed" &&
+          (feedPosts && feedPosts.length ? (
+            <div className="my-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              {feedPosts.map((feed) => (
+                <div key={feed._id} className="rounded-lg bg-[#FAFAFA] border">
+                  <div className="flex  p-3.5 py-4 items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <h2 className=" font-bold capitalize 2xl:text-lg">
+                        {feed.title}
+                      </h2>
+                      <p className=" w-2 h-2 rounded-full bg-[#D9D9D9]"></p>
+                      <h2 className=" font-bold capitalize 2xl:text-lg">
+                        {feed.category}
+                      </h2>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <HiDotsVertical className="2xl:text-lg" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="px-4 bg-white"
+                      >
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator className="mb-3" />
+
+                        <Link href={`/feed-learn/${tab}/${feed._id}`}>
+                          <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
+                            View Details
+                          </Button>
+                        </Link>
+
+                        <hr
+                          className="pt-2 border-t-1 block w-full"
+                          style={{ borderColor: "#CCCCCD" }}
+                        />
+                        <DeletePost />
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <div className=" w-full border-x border-b rounded-lg px-4 flex items-center gap-4 py-5 bg-white">
+                    <div className=" w-[135px] 2xl:w-[150px] h-[120px] 2xl:h-[154px] rounded-lg overflow-hidden ">
+                      {feed.isVideo ? (
+                        <Image
+                          src={"/streaming2.svg"}
+                          alt="live"
+                          width={124}
+                          height={124}
+                          className=" w-full h-full object-cover object-center"
+                        />
+                      ) : (
+                        <Image
+                          src={feed.media}
+                          alt="live"
+                          width={124}
+                          height={124}
+                          className=" w-full h-full object-cover object-center"
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2.5 w-fit">
+                      {feed.tags && feed.tags.length ? (
+                        <div className="flex gap-2">
+                          {feed.tags.map((tag, idx) => (
+                            <p
+                              key={idx}
+                              className="text-xs 2xl:text-sm bg-[#F6F6F6] px-2 py-1 rounded-md"
+                            >
+                              {tag}
+                            </p>
+                          ))}
+                        </div>
+                      ) : null}
+
+                      <p className=" text-sm 2xl:text-base max-w-[20rem] w-full">
+                        {feed.description}
+                      </p>
+                      <div className=" flex gap-1 items-center">
+                        <div className="bg-[#FFDDDD] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
+                          <Image
+                            src="/likes.svg"
+                            alt="live"
+                            width={18}
+                            height={18}
+                          />
+                          <p className="text-xs 2xl:text-sm font-semibold">
+                            {feed.likes.length}
+                          </p>
+                        </div>
+                        <div className="bg-[#F6F6F6] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
+                          <Image
+                            src="/comment.svg"
+                            alt="live"
+                            width={20}
+                            height={20}
+                          />
+                          <p className="text-xs 2xl:text-sm font-semibold">
+                            {feed.comments.length}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className=" w-full  items-center justify-center">
+              <h2 className="text-lg font-semibold text-center">
+                No Connects Found!
+              </h2>
+            </div>
+          ))}
 
         <div className=" w-full mt-4">
           <Pagination page={page} totalPages={totalPages} urlParamName="page" />
