@@ -2,12 +2,36 @@
 import React, { useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
-import { deleteReward } from "@/database/actions/reward.action";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
-
-const AddReward = () => {
+import axios from "axios";
+const AddPost = ({ id, type, onDeleteSuccess }) => {
   const modalRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      if (type === "feed") {
+        await axios.delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/feed/deleteFeed/${id}`
+        );
+      } else {
+        await axios.delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/learn/deleteLearn/${id}`
+        );
+      }
+
+      toast.success("Post deleted successfully");
+      if (modalRef.current) modalRef.current.click();
+      if (onDeleteSuccess) onDeleteSuccess();
+    } catch (error) {
+      console.error("Error deleting Post:", error);
+      toast.error("Failed to delete Post");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Dialog>
@@ -21,30 +45,27 @@ const AddReward = () => {
         style={{ backgroundColor: "white" }}
       >
         <div className="flex items-center justify-start flex-col gap-3 py-5">
-          <Image src="/delete.svg" alt="hehe" width={60} height={60} />
-          <h2 className=" font-semibold 2xl:text-lg">
-            Are You Sure You want to delete ?
+          <Image src="/delete.svg" alt="delete" width={60} height={60} />
+          <h2 className="font-semibold 2xl:text-lg">
+            Are You Sure You want to delete?
           </h2>
           <p className="text-sm text-slate-600">
-            Do you really want to delete the post from the feed ?
+            Do you really want to delete the Post from the feed?
           </p>
           <button
-            // onClick={async () => {
-            //   await deleteReward(id);
-            //   toast.success("Reward deleted successfully");
-            //   if (modalRef.current) modalRef.current.click();
-            // }}
-            className=" w-full rounded-lg py-3 mt-5 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold"
+            onClick={handleDelete}
+            disabled={loading}
+            className="w-full rounded-lg py-3 mt-5 bg-[#38B6FF] inline-flex items-center justify-center text-white gap-3 font-semibold"
           >
-            Yes
+            {loading ? "Deleting..." : "Yes"}
           </button>
           <button
             onClick={() => {
               if (modalRef.current) modalRef.current.click();
             }}
-            className=" w-full rounded-lg mb-3 text-[#38B6FF] inline-flex items-center justify-center  underline gap-3 font-semibold"
+            className="w-full rounded-lg mb-3 text-[#38B6FF] inline-flex items-center justify-center underline gap-3 font-semibold"
           >
-            Cancle
+            Cancel
           </button>
         </div>
       </DialogContent>
@@ -52,4 +73,4 @@ const AddReward = () => {
   );
 };
 
-export default AddReward;
+export default AddPost;

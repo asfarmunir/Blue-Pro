@@ -53,6 +53,10 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
+  const onDeleteSuccess = () => {
+    fetchData(tab);
+  };
+
   return (
     <div className=" p-1.5 md:p-3 2xl:p-5 w-full bg-slate-50 ">
       <div className="flex flex-col md:flex-row gap-6 items-center justify-between w-full">
@@ -176,19 +180,33 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
                           className="pt-2 border-t-1 block w-full"
                           style={{ borderColor: "#CCCCCD" }}
                         />
-                        <DeletePost />
+                        <DeletePost
+                          id={learn._id}
+                          type="learn"
+                          onDeleteSuccess={onDeleteSuccess}
+                        />
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
                   <div className=" w-full border-x border-b rounded-lg px-4 flex items-center gap-4 py-5 bg-white">
                     <div className=" w-[135px] 2xl:w-[150px] h-[120px] 2xl:h-[154px] rounded-lg overflow-hidden ">
-                      <Image
-                        src={learn.media}
-                        alt="live"
-                        width={124}
-                        height={124}
-                        className=" w-full h-full object-cover object-center"
-                      />
+                      {learn.isVideo ? (
+                        <Image
+                          src={"/streaming2.svg"}
+                          alt="live"
+                          width={124}
+                          height={124}
+                          className=" w-full h-full object-cover object-center"
+                        />
+                      ) : (
+                        <Image
+                          src={learn.media}
+                          alt="live"
+                          width={124}
+                          height={124}
+                          className=" w-full h-full object-cover object-center"
+                        />
+                      )}
                     </div>
                     <div className="flex flex-col gap-2.5 w-fit">
                       {learn.tags && learn.tags.length ? (
@@ -198,7 +216,7 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
                               key={idx}
                               className="text-xs 2xl:text-sm bg-[#F6F6F6] px-2 py-1 rounded-md"
                             >
-                              {tag}
+                              #{tag}
                             </p>
                           ))}
                         </div>
@@ -239,7 +257,7 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
           ) : (
             <div className=" w-full  items-center justify-center">
               <h2 className="text-lg font-semibold text-center">
-                No Connects Found!
+                No Post Found!
               </h2>
             </div>
           ))}
@@ -268,18 +286,20 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
                       >
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator className="mb-3" />
-
                         <Link href={`/feed-learn/${tab}/${feed._id}`}>
                           <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
                             View Details
                           </Button>
                         </Link>
-
                         <hr
                           className="pt-2 border-t-1 block w-full"
                           style={{ borderColor: "#CCCCCD" }}
                         />
-                        <DeletePost />
+                        <DeletePost
+                          id={feed._id}
+                          type="feed"
+                          onDeleteSuccess={onDeleteSuccess}
+                        />{" "}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -352,7 +372,7 @@ const FeedandLearn = ({ groups, totalPages, page }) => {
           ) : (
             <div className=" w-full  items-center justify-center">
               <h2 className="text-lg font-semibold text-center">
-                No Connects Found!
+                No Feed Found!
               </h2>
             </div>
           ))}
