@@ -11,10 +11,7 @@ export const connectToDatabase = async () => {
 
   cached.promise =
     cached.promise ||
-    mongoose.connect(MONGO_URI, {
-      dbName: "bluepro",
-      bufferCommands: false,
-    });
+    mongoose.connect(MONGO_URI);
 
   cached.conn = await cached.promise;
     console.log('Connected to database');

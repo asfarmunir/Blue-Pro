@@ -126,8 +126,13 @@ async function User({ searchParams }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="px-4 pt-4 bg-white">
             <Link href={`/user/${user._id}`}>
-             <Button className="bg-[#E7E7E7] w-full px-12  rounded-md mb-2 text-black hover:text-white">
+             <Button className="bg-[#E7E7E7] w-full  rounded-md mb-2 text-black hover:text-white">
               View User
+            </Button>
+            </Link>
+            <Link href={`/user/chat/${user._id}`}>
+             <Button className="bg-[#E7E7E7] w-full  rounded-md mb-2 text-black hover:text-white">
+              Chat with User
             </Button>
             </Link>
             <hr

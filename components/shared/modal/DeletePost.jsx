@@ -46,11 +46,11 @@ const AddPost = ({ id, type, onDeleteSuccess }) => {
       >
         <div className="flex items-center justify-start flex-col gap-3 py-5">
           <Image src="/delete.svg" alt="delete" width={60} height={60} />
-          <h2 className="font-semibold 2xl:text-lg">
+          <h2 className="font-semibold text-lg capitalize 2xl:text-xl">
             Are You Sure You want to delete?
           </h2>
           <p className="text-sm text-slate-600">
-            Do you really want to delete the Post from the feed?
+            Do you really want to delete the Post?
           </p>
           <button
             onClick={handleDelete}

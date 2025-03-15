@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthSessionProvider from "@/lib/AuthSession";
 import NextTopLoader from "nextjs-toploader";
-
+import { SocketProvider } from "@/lib/SocketContext";
 
 const inter = Inter({ subsets: ["latin"] });
    import { ToastContainer } from 'react-toastify';
@@ -19,6 +19,7 @@ export default function RootLayout({ children }) {
       <AuthSessionProvider>
           
       <body className={inter.className}>
+        <SocketProvider>
         <NextTopLoader
               color="blue"
               initialPosition={0.08}
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
             />
             {children}
       <ToastContainer />
+      </SocketProvider>
       </body>
       </AuthSessionProvider>
     </html>
