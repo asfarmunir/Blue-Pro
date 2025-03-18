@@ -112,11 +112,17 @@ const UserDetails = ({ userDetails }) => {
       </div>
       <div className=" w-full bg-white p-5 flex items-center justify-between shadow rounded-md mb-5 mt-8">
         <div className="flex items-center gap-2">
-          <Image alt="profile" src="/profile.svg" width={40} height={40} />
+          <div className="w-10 h-10 rounded-full overflow-hidden">
+            <Image
+              alt="profile"
+              src={userDetails.imageUrl || "/profile.svg"}
+              width={40}
+              className="object-cover w-full h-full"
+              height={40}
+            />
+          </div>
           <div className="flex flex-col">
-            <p className=" text-lg font-bold capitalize">
-              {userDetails.username}
-            </p>
+            <p className=" text-lg font-bold capitalize">{userDetails.name}</p>
             <p className="text-xs font-light capitalize text-slate-600">
               {userDetails.userType}
             </p>
@@ -127,7 +133,7 @@ const UserDetails = ({ userDetails }) => {
             <Image alt="profile" src="/star.png" width={33} height={33} />
             <div className="flex flex-col">
               <p className=" text-sm 2xl:text-base font-bold">
-                {userDetails.bluepoints}
+                {userDetails.totalGems || 0}
               </p>
               <p className="text-xs  text-slate-600">Blue Points</p>
             </div>

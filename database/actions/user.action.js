@@ -39,7 +39,7 @@ export const getAllUsers = async ({
     let query = {}; // Empty query object to build on
     if (name) {
       // If 'name' param is provided, search for users by username
-      query = { username: { $regex: name, $options: "i" } }; // Case-insensitive search
+      query = { name: { $regex: name, $options: "i" } }; // Case-insensitive search
     }
 
     // Get total number of users for pagination
@@ -61,6 +61,30 @@ export const getAllUsers = async ({
         totalEntries,
         currentPage: page,
         status: 200,
+      })
+    );
+  } catch (error) {
+    console.error("Get all users failed", error);
+    return JSON.parse(
+      JSON.stringify({
+        error: error.message,
+        status: 500,
+      })
+    );
+  }
+};
+
+export const getAllUsersWithFiltering = async () => {
+  try {
+    await connectToDatabase();
+
+    // Fetch paginated users, or search by username if 'name' is provided
+    const users = await User.find();
+    revalidatePath('/user');
+
+    return JSON.parse(
+      JSON.stringify({
+        users,
       })
     );
   } catch (error) {
@@ -97,7 +121,7 @@ export const addBluepoints = async (id,bluepoints) => {
 
         const user = await User.findById(id);
         if(!user) throw new Error('invalid token');
-        user.bluepoints =  user.bluepoints + Number(bluepoints);
+        user.totalGems =  user.totalGems + Number(bluepoints);
         await user.save();
         revalidatePath(`/user/${id}`)
         return JSON.parse(JSON.stringify({user,status:200}));

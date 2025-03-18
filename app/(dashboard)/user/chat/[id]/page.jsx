@@ -8,7 +8,7 @@ import { useSocket } from "@/lib/SocketContext";
 import Image from "next/image";
 import { RxCross2 } from "react-icons/rx";
 
-const socket = io("http://localhost:4000");
+const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL);
 
 export default function AdminChat({ params: { id } }) {
   const [roomId, setRoomId] = useState(null);
@@ -20,6 +20,14 @@ export default function AdminChat({ params: { id } }) {
   const { isConnected } = useSocket();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const messagesEndRef = useRef(null);
+
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]); // Runs when messages update
 
   // Prevent duplicate room creation
   const hasCreatedRoom = useRef(false);
@@ -56,7 +64,7 @@ export default function AdminChat({ params: { id } }) {
       socket.emit("join-room", data._id);
 
       const messagesRes = await axios.get(
-        `http://localhost:4000/chat/messages/${data._id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/chat/messages/${data._id}`
       );
       setMessages(messagesRes.data);
     } catch (error) {
@@ -183,7 +191,10 @@ export default function AdminChat({ params: { id } }) {
             </p>
           )}
 
-          <div className=" w-full max-h-[55svh] pr-5 overflow-y-auto overflow-x-hidden flex gap-4 py-4 flex-col">
+          <div
+            ref={messagesEndRef}
+            className=" w-full max-h-[55svh] pr-5 overflow-y-auto overflow-x-hidden flex gap-4 py-4 flex-col "
+          >
             {messages.map((msg, idx) => (
               <div
                 key={idx}

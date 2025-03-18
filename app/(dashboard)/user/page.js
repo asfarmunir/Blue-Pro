@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LuCalendarDays } from "react-icons/lu";
-import { getAllUsers } from "@/database/actions/user.action";
+import { getAllUsers, getAllUsersWithFiltering } from "@/database/actions/user.action";
 import {
   Table,
   TableBody,
@@ -22,7 +22,7 @@ import {
 import Link from "next/link";
 import BlockUser from "@/components/shared/BlockUser";
 import Pagination from "@/components/shared/Pagination";
-
+import BroadcastMessage from "@/components/shared/modal/BroadcastMessage";
 
 
 async function User({ searchParams }) {
@@ -36,6 +36,7 @@ async function User({ searchParams }) {
       name
     }
   );
+  const usersWithoutFilter =  await getAllUsersWithFiltering();
 
   return (
     <div className="" style={{ backgroundColor: "white" }}>
@@ -47,36 +48,8 @@ async function User({ searchParams }) {
           
           <div className="flex items-center gap-8">
           <Search />
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className=" px-4 py-2  inline-flex items-center rounded-lg font-bold border-2"
-              >
-                Today
-                <LuCalendarDays className=" text-lg 2xl:text-xl ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="px-4 bg-white">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator className="mb-3" />
-
-              <Button className="bg-[#E7E7E7] w-full rounded-md mb-2 text-black hover:text-white">
-                View all Details
-              </Button>
-
-              <hr
-                className="pt-2 border-t-1 block w-full"
-                style={{ borderColor: "#CCCCCD" }}
-              />
-              <Button
-                className="bg-[#D3175233] w-full rounded-md mb-2"
-                style={{ color: "#D31752" }}
-                >
-                Delete
-              </Button>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
+             
+            <BroadcastMessage users={usersWithoutFilter.users} />
           </div>
         
         </div>
@@ -100,7 +73,7 @@ async function User({ searchParams }) {
                     #{index+1}
                   </TableCell>
                   <TableCell className=" capitalize text-xs max-w-[120px]  2xl:text-sm  font-semibold">
-                    {user.username}
+                    {user.name}
                   </TableCell>
                   <TableCell className="text-xs max-w-[120px] 2xl:text-sm">
                     <p className="bg-[#E6F7F8] text-[#00A3B4] flex items-center  justify-center w-fit gap-2 text-center font-bold px-3  py-2 rounded-full">
@@ -109,7 +82,7 @@ async function User({ searchParams }) {
                     </p>
                   </TableCell>
                   <TableCell className=" text-xs max-w-[100px] text-center  2xl:text-sm  ">
-                    {user.bluepoints}
+                    {user.totalGems || 0}
                   </TableCell>
                   <TableCell className=" text-xs max-w-[180px]  2xl:text-sm  ">
                     {user.email}
