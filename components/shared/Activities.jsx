@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { deleteActivity } from "@/database/actions/activity.action";
 import { toast } from "react-toastify";
-const Live = ({ activities, page, totalPages }) => {
+const Live = ({ activities, page, totalPages, users }) => {
   console.log("🚀 ~ Live ~ activities:", activities);
   const modalRef = useRef(null);
   return (
@@ -36,7 +36,7 @@ const Live = ({ activities, page, totalPages }) => {
           <p>You can check th e activity management details here</p>
         </div>
         <div className="flex items-center w-full md:w-fit gap-2">
-          <AddEvent />
+          <AddEvent users={users} />
         </div>
       </div>
       <div className=" w-full my-8 bg-white  rounded-lg p-4 2xl:p-6">
@@ -86,7 +86,7 @@ const Live = ({ activities, page, totalPages }) => {
             <div key={index} className="rounded-lg bg-slate-50 border">
               <div className="flex  p-2.5  items-center justify-between">
                 <h2 className=" font-bold 2xl:text-lg capitalize">
-                  {activity.name}
+                  {activity.title}
                 </h2>
 
                 <DropdownMenu>
@@ -110,7 +110,7 @@ const Live = ({ activities, page, totalPages }) => {
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator className="mb-3" />
 
-                    <EditEvent id={activity._id} />
+                    <EditEvent id={activity._id} users={users} />
 
                     <hr
                       className="pt-2 border-t-1 block w-full"
@@ -158,13 +158,23 @@ const Live = ({ activities, page, totalPages }) => {
               </div>
               <div className=" w-full border-x border-b rounded-lg px-4 flex items-center gap-4 py-5  bg-white">
                 <div className=" w-[100px] h-[100px]  object-cover">
-                  <Image
-                    src={activity.image || "/live.png"}
-                    alt="live"
-                    className="rounded-lg object-cover object-center w-full h-full"
-                    width={84}
-                    height={84}
-                  />
+                  {activity.isVideo ? (
+                    <Image
+                      src={"/streaming2.svg"}
+                      alt="live"
+                      className="rounded-lg object-cover object-center w-full h-full"
+                      width={84}
+                      height={84}
+                    />
+                  ) : (
+                    <Image
+                      src={activity.media || "/streaming2.svg"}
+                      alt="live"
+                      className="rounded-lg object-cover object-center w-full h-full"
+                      width={84}
+                      height={84}
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-2.5">
                   {
@@ -188,7 +198,7 @@ const Live = ({ activities, page, totalPages }) => {
                               width={16}
                               height={16}
                             />
-                            {activity.scheduleTime} hours
+                            {activity.startTime}{" "}
                           </p>
                           <p className="text-xs inline-flex items-center gap-1 2xl:text-sm text-slate-500">
                             <Image
@@ -208,9 +218,9 @@ const Live = ({ activities, page, totalPages }) => {
                       ? activity.description.substring(0, 100) + "..."
                       : activity.description}
                   </p>
-                  <div className="bg-[#007AFF]/15 w-fit text-xs 2xl:text-sm  rounded-full px-3 py-1.5 gap-2 inline-flex items-center">
+                  <div className="bg-[#007AFF]/15  w-fit text-xs 2xl:text-sm  rounded-full px-3 py-1.5 gap-2 inline-flex items-center">
                     <Image src="/link.svg" alt="live" width={15} height={15} />
-                    {activity.link}
+                    {activity.externalLink}
                   </div>
                 </div>
               </div>

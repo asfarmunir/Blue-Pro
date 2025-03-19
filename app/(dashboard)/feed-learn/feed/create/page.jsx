@@ -20,6 +20,7 @@ const CreateFeed = () => {
     tags: "",
     media: null,
   });
+  console.log("🚀 ~ CreateFeed ~ formData:", formData);
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
 
