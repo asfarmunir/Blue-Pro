@@ -22,14 +22,19 @@ import BroadcastMessage from "@/components/shared/modal/BroadcastMessage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
-function User({ allUsers, usersWithoutFilter }) {
+function User({ allUsers = [] }) {
   const [users, setUsers] = useState(allUsers?.users || []);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
-    if (searchTerm) {
+    if (
+      searchTerm &&
+      searchTerm.length > 0 &&
+      allUsers?.users &&
+      allUsers?.users.length > 0
+    ) {
       const filteredUsers = allUsers.users.filter((user) =>
         user.creator_information
           ?.toLowerCase()

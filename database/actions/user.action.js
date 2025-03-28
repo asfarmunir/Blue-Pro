@@ -62,53 +62,6 @@ export const getCountOfAllUsers = async()=>{
   }
 }
 
-
-// export const getAllUsers = async ({
-//   page = 1, // Default to page 1 if not provided
-//   limit = 8, // Default limit to 8 if not provided
-//   name, // Username to search for
-// }) => {
-//   try {
-//     await connectToDatabase();
-
-//     let query = {}; // Empty query object to build on
-//     if (name) {
-//       // If 'name' param is provided, search for users by username
-//       query = { name: { $regex: name, $options: "i" } }; // Case-insensitive search
-//     }
-
-//     // Get total number of users for pagination
-//     const totalEntries = await User.countDocuments(query);
-//     const totalPages = Math.ceil(totalEntries / limit);
-
-//     // Fetch paginated users, or search by username if 'name' is provided
-//     const users = await User.find(query)
-//       .skip((page - 1) * limit) // Skip based on the page number
-//       .limit(limit); // Limit number of results per page
-
-//     // Revalidate path as needed
-//     revalidatePath('/user');
-
-//     return JSON.parse(
-//       JSON.stringify({
-//         users,
-//         totalPages,
-//         totalEntries,
-//         currentPage: page,
-//         status: 200,
-//       })
-//     );
-//   } catch (error) {
-//     console.error("Get all users failed", error);
-//     return JSON.parse(
-//       JSON.stringify({
-//         error: error.message,
-//         status: 500,
-//       })
-//     );
-//   }
-// };
-
 import axios from "axios";
 
 export const getAllUsers = async () => {
@@ -151,7 +104,6 @@ export const getAllUsers = async () => {
       })
     );
 
-    // 3️⃣ Return the Merged User Data
     return JSON.parse(
       JSON.stringify({
         users: usersWithDetails,
@@ -163,6 +115,7 @@ export const getAllUsers = async () => {
     return {
       error: error.message,
       status: 500,
+      users: [], // Return an empty array in case of error
     };
   }
 };
@@ -174,7 +127,7 @@ export const getAllUsersWithFiltering = async () => {
 
     // Fetch paginated users, or search by username if 'name' is provided
     const users = await User.find();
-    revalidatePath('/user');
+    // revalidatePath('/user');
 
     return JSON.parse(
       JSON.stringify({
@@ -220,7 +173,6 @@ export const getUserById = async (id) =>{
             return JSON.parse(JSON.stringify({status:404}));
         }
         const mergedUser = { ...userObj, ...data };
-        revalidatePath(`/user/${id}`)
         return JSON.parse(JSON.stringify({user: mergedUser,status:200}));
 
     } catch (error) {

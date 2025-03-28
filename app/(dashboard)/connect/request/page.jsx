@@ -1,16 +1,7 @@
 import React from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Link from "next/link";
-import Search from "@/components/shared/Search";
-import { CiCircleChevDown, CiFilter } from "react-icons/ci";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+// import Search from "@/components/shared/Search";
 import {
   Table,
   TableBody,
@@ -19,16 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { LuCalendarDays } from "react-icons/lu";
-import Image from "next/image";
+
 import { getAllPendingJoinRequests } from "@/database/actions/connect.action";
 import RequestApproval from "@/components/shared/RequestApproval";
 
 const page = async () => {
   const allRequests = await getAllPendingJoinRequests();
-  console.log("🚀 ~ page ~ allRequests:", allRequests);
   return (
     <div className=" p-3 2xl:p-4 bg-slate-50">
       <Link href={"/connect"} className="flex items-center gap-2 mb-3">
@@ -39,9 +26,9 @@ const page = async () => {
       <div className="border rounded-xl p-5 my-8 bg-white  ">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold">Group Requests</h2>
-          <div className="flex items-center gap-5">
+          {/* <div className="flex items-center gap-5">
             <Search />
-            {/* <DropdownMenu>
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
@@ -70,8 +57,8 @@ const page = async () => {
                   Delete
                 </Button>
               </DropdownMenuContent>
-            </DropdownMenu> */}
-          </div>
+            </DropdownMenu>
+          </div> */}
         </div>
         <Table>
           <TableHeader className="bg-[#F9FAFB] border">
