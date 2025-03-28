@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { WebhookReceiver } from "livekit-server-sdk";
+import { connectToDatabase } from "@/database";
+import streamModal from "@/database/stream.modal";
 
-import { connectToDatabase } from "../../../database";
-import streamModal from "../../../database/stream.modal";
 
 const receiver = new WebhookReceiver({
     apiKey: process.env.LIVEKIT_API_KEY,
