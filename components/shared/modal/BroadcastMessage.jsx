@@ -135,7 +135,9 @@ const AddPost = ({ users }) => {
                       className="object-cover w-full h-full"
                     />
                   </div>
-                  <p className="text-xs 2xl:text-sm capitalize">{user.name}</p>
+                  <p className="text-xs 2xl:text-sm capitalize">
+                    {user.creator_information}
+                  </p>
                 </div>
                 <Checkbox
                   className="w-6 h-6 rounded-full"
@@ -156,7 +158,7 @@ const AddPost = ({ users }) => {
                     key={user._id}
                     className=" border-[#D9D9D9] border flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs 2xl:text-sm capitalize"
                   >
-                    {user.name}
+                    {user.creator_information}
                     <button
                       onClick={() => removeFromSelected(user._id)}
                       className="focus:outline-none"

@@ -216,8 +216,10 @@ export default function AdminChat({ params: { id } }) {
                       msg.sender === "bluProTeamId4fa3b926e43a"
                         ? "/avatar-blue.svg"
                         : receiver?.imageUrl
+                        ? receiver?.imageUrl
+                        : "/avatar.svg"
                     }
-                    alt="profile picture"
+                    alt="p"
                     width={50}
                     height={50}
                     className=" object-cover"

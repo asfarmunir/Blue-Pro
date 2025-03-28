@@ -12,7 +12,7 @@ const Summary = async () => {
         <div>
           <SummaryCard
             title={"Active Users"}
-            number={numberOfUsers}
+            number={numberOfUsers - 1}
             description={"Overall last month"}
             arrow={<TbArrowBigUpLines />}
             percentage={30.5626}

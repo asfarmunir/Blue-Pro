@@ -46,11 +46,11 @@ const GroupSchema = new Schema(
       trim: true,
       default: 'General',
     },
-    description: {
+    about: {
       type: String,
       trim: true,
     },
-    grpImage: {
+    bannerImage: {
       type: String,
       trim: true,
     },

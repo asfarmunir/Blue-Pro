@@ -5,12 +5,12 @@ import React from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import PostCreation from "@/components/shared/PostCreation";
 const page = ({ details, posts }) => {
-  console.log("🚀 ~ page ~ posts:", posts);
+  console.log("🚀 ~ page ~ posts:", details);
   return (
     <div className=" w-full bg-[#F6F6F6]  py-3 md:p-3 2xl:p-4 mb-8">
       <div className=" w-full relative h-60 2xl:h-72 bg-[#38B6FF]/10">
         <Image
-          src={details.grpImage}
+          src={details.bannerImage}
           alt="connect"
           width={200}
           height={200}
@@ -38,7 +38,7 @@ const page = ({ details, posts }) => {
         </Link>
         <div className=" hidden md:block p-4 absolute bottom-5 left-5 rounded-md bg-slate-50  bg-opacity-80">
           <p className="bg-[#38B6FF]/10 capitalize text-[#38B6FF] text-xs px-4 w-fit text-center font-semibold  py-1.5 mb-2 rounded-full">
-            {details.category}
+            {details.about}
           </p>
           <h2 className="2xl:text-2xl text-xl capitalize font-bold">
             {details.name}
@@ -161,7 +161,7 @@ const page = ({ details, posts }) => {
                 <div className=" flex gap-1 items-center">
                   <div className="bg-[#FFDDDD] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
                     <Image src="/likes.svg" alt="live" width={20} height={20} />
-                    <p className="text-xs 2xl:text-sm font-semibold">12</p>
+                    <p className="text-xs 2xl:text-sm font-semibold">0</p>
                   </div>
                   <div className="bg-[#F6F6F6] rounded-xl flex items-center justify-center gap-2 px-3 py-2">
                     <Image
@@ -170,7 +170,7 @@ const page = ({ details, posts }) => {
                       width={22}
                       height={22}
                     />
-                    <p className="text-xs 2xl:text-sm font-semibold">12</p>
+                    <p className="text-xs 2xl:text-sm font-semibold">0</p>
                   </div>
                 </div>
               </div>

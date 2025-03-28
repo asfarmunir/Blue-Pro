@@ -41,7 +41,6 @@ const activitySchema = new Schema({
     },
      location: {
         type: String,
-        required: true,
     },
     likes: [{
         type: String,

@@ -19,9 +19,9 @@ const AddReward = ({ allProducts }) => {
   const [progress, setProgress] = useState(0);
   const modalRef = useRef(null);
   const [reward, setReward] = useState({
-    awardTitle: "jumbo Award",
-    bluepoints: "50",
-    description: "hola amigo",
+    awardTitle: "",
+    bluepoints: "",
+    description: "",
     attachedProducts: [],
   });
   const [errors, setErrors] = useState({

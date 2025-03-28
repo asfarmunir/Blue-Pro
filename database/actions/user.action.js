@@ -3,16 +3,51 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "..";
 import User from '@/database/user.modal';
 
+const API_URL = "https://stats.blupro.live/api/user/";
+const BEARER_TOKEN = "b3lu462ab148e68fge56e4te4534t";
 
 export const getRecentUsers = async () => {
-    try {
-        await connectToDatabase();
-        const users = await User.find().sort({ createdAt: -1 }).limit(10);
-        return JSON.parse(JSON.stringify({users,status:200}));
-    } catch (error) {
-        console.error("Get recent users failed", error);
-        return JSON.parse(JSON.stringify({error: error.message,status:500}));
-    }
+  try {
+    await connectToDatabase();
+    
+    // Get 10 most recent users
+    const users = await User.find().sort({ createdAt: -1 }).limit(10);
+
+    // Fetch additional details from the external API
+    const usersWithDetails = await Promise.all(
+      users.map(async (user) => {
+        const userObj = user.toObject(); // Ensure all fields are accessible
+
+        if (!userObj.bluId) return userObj; // Skip if no bluId
+
+        try {
+          const response = await axios.post(
+            `${API_URL}${userObj.bluId}`,
+            {}, // No request body needed
+            {
+              headers: {
+                Authorization: `Bearer ${BEARER_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          return {
+            ...userObj, // Keep existing user details
+            ...response.data, // Attach extra data from the API
+          };
+        } catch (error) {
+          console.error(`Failed to fetch BluData for ${userObj.bluId}:`, error.message);
+          return { ...userObj }; // Handle errors gracefully
+        }
+      })
+    );
+
+    return JSON.parse(JSON.stringify({ users: usersWithDetails, status: 200 }));
+  } catch (error) {
+    console.error("Get recent users failed", error);
+    return JSON.parse(JSON.stringify({ error: error.message, status: 500 }));
+  }
 };
 
 export const getCountOfAllUsers = async()=>{
@@ -28,51 +63,110 @@ export const getCountOfAllUsers = async()=>{
 }
 
 
-export const getAllUsers = async ({
-  page = 1, // Default to page 1 if not provided
-  limit = 8, // Default limit to 8 if not provided
-  name, // Username to search for
-}) => {
+// export const getAllUsers = async ({
+//   page = 1, // Default to page 1 if not provided
+//   limit = 8, // Default limit to 8 if not provided
+//   name, // Username to search for
+// }) => {
+//   try {
+//     await connectToDatabase();
+
+//     let query = {}; // Empty query object to build on
+//     if (name) {
+//       // If 'name' param is provided, search for users by username
+//       query = { name: { $regex: name, $options: "i" } }; // Case-insensitive search
+//     }
+
+//     // Get total number of users for pagination
+//     const totalEntries = await User.countDocuments(query);
+//     const totalPages = Math.ceil(totalEntries / limit);
+
+//     // Fetch paginated users, or search by username if 'name' is provided
+//     const users = await User.find(query)
+//       .skip((page - 1) * limit) // Skip based on the page number
+//       .limit(limit); // Limit number of results per page
+
+//     // Revalidate path as needed
+//     revalidatePath('/user');
+
+//     return JSON.parse(
+//       JSON.stringify({
+//         users,
+//         totalPages,
+//         totalEntries,
+//         currentPage: page,
+//         status: 200,
+//       })
+//     );
+//   } catch (error) {
+//     console.error("Get all users failed", error);
+//     return JSON.parse(
+//       JSON.stringify({
+//         error: error.message,
+//         status: 500,
+//       })
+//     );
+//   }
+// };
+
+import axios from "axios";
+
+export const getAllUsers = async () => {
   try {
-    await connectToDatabase();
+    const API_URL = "https://stats.blupro.live/api/user/";
+    const BEARER_TOKEN = "b3lu462ab148e68fge56e4te4534t";
 
-    let query = {}; // Empty query object to build on
-    if (name) {
-      // If 'name' param is provided, search for users by username
-      query = { name: { $regex: name, $options: "i" } }; // Case-insensitive search
-    }
+    // 1️⃣ Fetch Users from Your Database
+    const users = await User.find({}, "-authToken -__v"); // Exclude sensitive fields
 
-    // Get total number of users for pagination
-    const totalEntries = await User.countDocuments(query);
-    const totalPages = Math.ceil(totalEntries / limit);
+    // 2️⃣ Fetch External Data in Parallel
+    const usersWithDetails = await Promise.all(
 
-    // Fetch paginated users, or search by username if 'name' is provided
-    const users = await User.find(query)
-      .skip((page - 1) * limit) // Skip based on the page number
-      .limit(limit); // Limit number of results per page
+      users.map(async (userObj) => {
+            const user = userObj.toObject(); // Convert Mongoose document to plain object
 
-    // Revalidate path as needed
-    revalidatePath('/user');
+        try {
+          if (!user.bluId) return user; // Skip if no bluId
 
+          const response = await axios.post(
+            `${API_URL}${user.bluId}`,
+            {}, // No body required
+            {
+              headers: {
+                Authorization: `Bearer ${BEARER_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          // Merge user data with external API response
+          return {
+            ...user,
+            ...response.data, // Attach API data
+          };
+        } catch (error) {
+          console.error(`Failed to fetch BluData for ${user.bluId}:`, error.message);
+          return { ...user }; // Return null if request fails
+        }
+      })
+    );
+
+    // 3️⃣ Return the Merged User Data
     return JSON.parse(
       JSON.stringify({
-        users,
-        totalPages,
-        totalEntries,
-        currentPage: page,
+        users: usersWithDetails,
         status: 200,
       })
     );
   } catch (error) {
-    console.error("Get all users failed", error);
-    return JSON.parse(
-      JSON.stringify({
-        error: error.message,
-        status: 500,
-      })
-    );
+    console.error("Error fetching users:", error);
+    return {
+      error: error.message,
+      status: 500,
+    };
   }
 };
+
 
 export const getAllUsersWithFiltering = async () => {
   try {
@@ -104,10 +198,30 @@ export const getUserById = async (id) =>{
     try {
         await connectToDatabase();
         const user = await User.findById(id);
+
+
         if(!user){
         return JSON.parse(JSON.stringify({status:404}));
         }
-        return JSON.parse(JSON.stringify({user,status:200}));
+
+        const userObj = user.toObject(); // Convert Mongoose document to plain object
+        const { bluId } = userObj;
+        const API_URL = `https://stats.blupro.live/api/user/${bluId}`;
+
+        const res = await axios.post(API_URL, {}, {
+            headers: {
+                Authorization: `Bearer ${BEARER_TOKEN}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        const { data } = res;
+        if (!data) {
+            return JSON.parse(JSON.stringify({status:404}));
+        }
+        const mergedUser = { ...userObj, ...data };
+        revalidatePath(`/user/${id}`)
+        return JSON.parse(JSON.stringify({user: mergedUser,status:200}));
 
     } catch (error) {
         return JSON.parse(JSON.stringify({error: error.message,status:500}));
@@ -116,6 +230,8 @@ export const getUserById = async (id) =>{
 }
 
 export const addBluepoints = async (id,bluepoints) => {
+    console.log("🚀 ~ addBluepoints ~ bluepoints:", bluepoints)
+    console.log("🚀 ~ addBluepoints ~ id:", id)
     try {
         await connectToDatabase();
 
@@ -127,6 +243,7 @@ export const addBluepoints = async (id,bluepoints) => {
         return JSON.parse(JSON.stringify({user,status:200}));
         
     } catch (error) {
+      console.error("Error adding bluepoints:", error);
         return JSON.parse(JSON.stringify({error: error.message,status:500}));
 
         

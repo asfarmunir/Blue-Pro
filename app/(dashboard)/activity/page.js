@@ -1,7 +1,7 @@
 import React from 'react'
 import Activities from '@/components/shared/Activities'
 import { getAllActivities } from '@/database/actions/activity.action';
-import { getAllUsersWithFiltering } from '@/database/actions/user.action';
+import { getAllUsers, getAllUsersWithFiltering } from '@/database/actions/user.action';
 
 
 
@@ -14,12 +14,14 @@ const page = async ({ searchParams }) => {
     search
   });
     const usersWithoutFilter =  await getAllUsersWithFiltering();
+      const allUsers =  await getAllUsers();
+    
   
   return (
     <Activities activities={allActivities.activities} 
     totalPages={allActivities.totalPages}
     page={page}
-    users={usersWithoutFilter.users}
+    users={allUsers.users}
     />
   )
 }

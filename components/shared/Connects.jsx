@@ -93,7 +93,7 @@ const Connect = ({ groups, totalPages, page }) => {
                 <div className=" w-full border-x border-b rounded-lg px-4 flex items-center gap-4 py-5 bg-white">
                   <div className=" w-[135px] 2xl:w-[150px] h-[120px] 2xl:h-[154px] rounded-lg overflow-hidden ">
                     <Image
-                      src={group.grpImage}
+                      src={group.bannerImage}
                       alt="live"
                       width={124}
                       height={124}
@@ -126,7 +126,7 @@ const Connect = ({ groups, totalPages, page }) => {
                       </p>
                     </div>
                     <p className=" text-sm 2xl:text-base max-w-[20rem] w-full">
-                      {group.description}
+                      {group.about}
                     </p>
                     <p className="text-xs 2xl:text-sm text-gray-400">
                       Created{" "}

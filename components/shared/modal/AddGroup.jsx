@@ -104,9 +104,9 @@ const AddReward = () => {
 
       const data = {
         name: groupName,
-        description,
+        about: description,
         type: groupType,
-        grpImage: uploadedImagesUrl[0],
+        bannerImage: uploadedImagesUrl[0],
         category: "general",
       };
       const res = await createGroup(data);

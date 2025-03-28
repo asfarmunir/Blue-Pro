@@ -32,8 +32,8 @@ const UserDetails = ({ userDetails }) => {
   const [points, setPoints] = useState(0);
 
   const handleSubmit = async () => {
-    if (name !== userDetails.username) {
-      toast.error("PLease verify allocation of bluepoints");
+    if (name !== userDetails.creator_information) {
+      toast.error("Please verify allocation of bluepoints");
       return;
     }
     const res = await addBluepoints(userDetails._id, points);
@@ -122,7 +122,9 @@ const UserDetails = ({ userDetails }) => {
             />
           </div>
           <div className="flex flex-col">
-            <p className=" text-lg font-bold capitalize">{userDetails.name}</p>
+            <p className=" text-lg font-bold capitalize">
+              {userDetails.creator_information}
+            </p>
             <p className="text-xs font-light capitalize text-slate-600">
               {userDetails.userType}
             </p>
@@ -151,7 +153,9 @@ const UserDetails = ({ userDetails }) => {
             <Image alt="profile" src="/mail.png" width={33} height={33} />
             <div className="flex flex-col">
               <p className=" text-sm 2xl:text-base font-bold">Email Address</p>
-              <p className="text-xs  text-slate-600">{userDetails.email}</p>
+              <p className="text-xs  text-slate-600">
+                {userDetails.email || "not provided"}
+              </p>
             </div>
           </div>
         </div>
@@ -167,7 +171,7 @@ const UserDetails = ({ userDetails }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
+          {/* <TableRow>
             <TableCell className=" text-xs max-w-[120px]  2xl:text-sm  font-semibold">
               Watch
             </TableCell>
@@ -189,32 +193,15 @@ const UserDetails = ({ userDetails }) => {
                 Delivered
               </button>
             </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className=" text-xs max-w-[120px]  2xl:text-sm  font-semibold">
-              Scissors
-            </TableCell>
-            <TableCell className="text-xs max-w-[200px] 2xl:text-sm">
-              10 Points
-            </TableCell>
-            <TableCell className=" text-xs max-w-[180px]  2xl:text-sm  ">
-              <button className="bg-[#FEF3F2] text-red-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
-                <Image src="/reject.svg" alt="eye" width={18} height={18} />
-                Not Yet
-              </button>
-            </TableCell>
-            <TableCell className=" text-xs font-semibold max-w-[100px]  2xl:text-sm  ">
-              Thunder Prize
-            </TableCell>
-            <TableCell className="  max-w-[130px] text-xs 2xl:text-sm  ">
-              <button className="bg-[#FEF3F2] text-red-500 flex items-center  justify-center w-fit gap-1 text-center font-bold px-3  py-2 rounded-full">
-                <Image src="/reject.svg" alt="eye" width={18} height={18} />
-                Not Yet
-              </button>
-            </TableCell>
-          </TableRow>
+          </TableRow> */}
         </TableBody>
       </Table>
+      <div
+        className=" text-xs w-full py-8 text-slate-600 justify-center flex   2xl:text-sm  font-semibold"
+        colSpan={5}
+      >
+        No Data Found
+      </div>
     </div>
   );
 };

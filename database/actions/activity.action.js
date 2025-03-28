@@ -31,7 +31,7 @@ export const getAllActivities = async ({page, limit, search }) => {
         // Define query conditions
         const query = search
             ? { $or: [
-                    { name: { $regex: search, $options: "i" } },
+                    { title: { $regex: search, $options: "i" } },
                 ] }
             : {};
 
