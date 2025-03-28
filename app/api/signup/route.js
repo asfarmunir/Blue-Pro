@@ -31,6 +31,6 @@ export const comparePassword = async (password, hashedPassword) => {
 
         } catch (error) {
             console.error("Login failed", error);
-            return NextResponse.json({status: 400 , message: "Invalid login credentials"});
+        return NextResponse.json({status: 400 , message: error.message});
         }
     }
